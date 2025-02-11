@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: blaybus
+
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PW}
+
+  data:
+    redis:
+      port: 6379
+      host: ${REDIS_HOST}
+      repositories:
+        enabled: false
+
+
+jwt:
+  secret: ${JWT}
+
+#  mail:
+#    host: smtp.naver.com
+#    port: ${MAIL_PORT}
+#    username: ${MAIL_USERNAME}
+#    password: ${MAIL_PW}
+#    properties:
+#      mail:
+#        debug: true
+#        smtp.auth: true
+#        smtp.ssl.enable: true
+#        smtp.ssl.trust: smtp.naver.com
+
+#cloud:
+#  aws:
+#    credentials:
+#      access-key: ${AWS_ACCESS_KEY}
+#      secret-key: ${AWS_SECRET_KEY}
+#    s3:
+#      bucket: ${AWS_S3_BUCKET}
+#    region:
+#      static: ap-northeast-2
+#      auto: false
+#    stack:
+#      auto: false
+
+# 암호화 시 사용
+#crypto:
+#  private-key: ${CRYPTO_PRIVATE_KEY}
+#  transformation: ${CRYPTO_TRANSFORMATION}
