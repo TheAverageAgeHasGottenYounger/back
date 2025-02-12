@@ -58,7 +58,6 @@ jwt:
 #    stack:
 #      auto: false
 
-# 암호화 시 사용
-#crypto:
-#  private-key: ${CRYPTO_PRIVATE_KEY}
-#  transformation: ${CRYPTO_TRANSFORMATION}
+crypto:
+  private-key: ${CRYPTO_PRIVATE_KEY}
+  transformation: ${CRYPTO_TRANSFORMATION}
