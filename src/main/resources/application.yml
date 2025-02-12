@@ -9,7 +9,7 @@ spring:
 
   jpa:
     open-in-view: false
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: update
     properties:
@@ -58,7 +58,6 @@ jwt:
 #    stack:
 #      auto: false
 
-# 암호화 시 사용
-#crypto:
-#  private-key: ${CRYPTO_PRIVATE_KEY}
-#  transformation: ${CRYPTO_TRANSFORMATION}
+crypto:
+  private-key: ${CRYPTO_PRIVATE_KEY}
+  transformation: ${CRYPTO_TRANSFORMATION}
