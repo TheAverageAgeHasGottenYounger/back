@@ -30,7 +30,21 @@ public class CenterService {
         // 회원 리스트
         List<Member> members = new ArrayList<>();
         Member member = memberRepository.findById(adminRequest.id()).orElse(null);
-        if (member != null) members.add(member);
+
+//        Member memberss = Member.builder()
+//                .id(adminRequest.id())
+//                .password(bCryptPasswordEncoder.encode(adminRequest.password()))
+//                .name(adminRequest.name())
+//                .phoneNumber(adminRequest.phoneNumber())
+//                .address(adminRequest.address())
+//                .profileUrl("")
+//                .role(role)
+//                .createdTime(now)
+//                .build();
+
+        if (member != null) {
+            members.add(member);
+        }
 
         Center center = Center.builder()
                 .name(centerRequest.name())
@@ -44,6 +58,15 @@ public class CenterService {
                 .build();
 
         centerRepository.save(center);
+
+        if (member != null) {
+            Member adminMember = Member.builder()
+                    .id(member.getId())
+                    .center(center)
+                    .build();
+
+            memberRepository.save(adminMember);
+        }
     }
 
     public Center findCenterName(String name) {

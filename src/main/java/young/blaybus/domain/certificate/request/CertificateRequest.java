@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @AllArgsConstructor
-public class CertificateRequest{
+public class CertificateRequest {
     private String type;
     private String number;
     private String grade;
