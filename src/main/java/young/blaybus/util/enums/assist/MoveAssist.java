@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MoveAssist {
 
-  GRADE1("거동 불가"),
-  GRADE2("휠체어 이동 보조"),
+  GRADE4("스스로 거동 가능"),
   GRADE3("이동시 부축 도움"),
-  GRADE4("스스로 거동 가능");
+  GRADE2("휠체어 이동 보조"),
+  GRADE1("거동 불가");
 
   private final String value;
 }
