@@ -3,8 +3,8 @@ package young.blaybus.domain.member.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import young.blaybus.domain.center.request.CenterRequest;
 import young.blaybus.domain.certificate.Certificate;
 import young.blaybus.domain.certificate.enums.CertificateGrade;
 import young.blaybus.domain.certificate.enums.CertificateType;
@@ -28,6 +28,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final CertificateRepository certificateRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 관리자 회원 등록
     public void adminRegisterMember(AdminRequest adminRequest) {
@@ -35,7 +36,7 @@ public class MemberService {
         MemberRole role = MemberRole.ADMIN;
         Member member = Member.builder()
                 .id(adminRequest.id())
-                .password(adminRequest.password())
+                .password(bCryptPasswordEncoder.encode(adminRequest.password()))
                 .name(adminRequest.name())
                 .phoneNumber(adminRequest.phoneNumber())
                 .address(adminRequest.address())
@@ -56,7 +57,7 @@ public class MemberService {
         MemberRole role = MemberRole.WORKER;
         Member member = Member.builder()
                 .id(memberRequest.id())
-                .password(memberRequest.password())
+                .password(bCryptPasswordEncoder.encode(memberRequest.password()))
                 .name(memberRequest.name())
                 .phoneNumber(memberRequest.phoneNumber())
                 .address(memberRequest.address())

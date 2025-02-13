@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class AuthenticatedUserDetails implements UserDetails {
+
     private final Member member;
 
     @Override
@@ -17,22 +18,21 @@ public class CustomUserDetails implements UserDetails {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new GrantedAuthority() {
             @Override
-            public String getAuthority() {
-                return member.getRole().name();
-            }
+            public String getAuthority() { return member.getRole().name(); }
         });
 
         return authorities;
     }
 
-    @Override
-    public String getPassword() {
-        return member.getPassword();
-    }
-
+    // 원래는 유저이름이지만 ID/PW 방식을 사용하고 있기 때문에 Id를 반환
     @Override
     public String getUsername() {
         return member.getId();
+    }
+
+    @Override
+    public String getPassword() {
+        return member.getPassword();
     }
 
     @Override

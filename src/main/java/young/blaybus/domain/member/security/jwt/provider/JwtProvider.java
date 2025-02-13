@@ -13,6 +13,7 @@ import java.util.Date;
 
 @Component
 public class JwtProvider {
+
     private final Key secretKey;
     private final Claims claims;
 
@@ -51,7 +52,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    // 유저 이름 꺼내기
+    // 유저 이름 가져오기
     public String getUserId(String token) {
         try {
             return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().get("userId", String.class);
@@ -60,7 +61,7 @@ public class JwtProvider {
         }
     }
 
-    // 권한 꺼내기
+    // 권한 가져오기
     public String getRole(String token) {
         try {
             return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().get("role", String.class);

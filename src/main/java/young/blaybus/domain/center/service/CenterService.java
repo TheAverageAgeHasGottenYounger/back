@@ -6,17 +6,10 @@ import org.springframework.stereotype.Service;
 import young.blaybus.domain.center.Center;
 import young.blaybus.domain.center.repository.CenterRepository;
 import young.blaybus.domain.center.request.CenterRequest;
-import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.request.AdminRequest;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-
-/**
- * 센터가 존재하는지 (존재하지 않다면 새로 등록, 존재한다면 존재한 센터를 반환)
- */
 
 @Service
 @RequiredArgsConstructor

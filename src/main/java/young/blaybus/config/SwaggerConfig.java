@@ -68,7 +68,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemeName);
 
     Components components = new Components()
-            .addSecuritySchemes(jwtSchemeName, new SecurityScheme()
+                    .addSecuritySchemes(jwtSchemeName, new SecurityScheme()
                     .name("Authorization")
                     .type(SecurityScheme.Type.HTTP)
                     .scheme("bearer")
@@ -77,7 +77,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     return new OpenAPI()
             .info(info)
-            .addServersItem(new Server().url("/"))
+            .addServersItem(new Server().url("http://localhost:8080"))
             .addSecurityItem(securityRequirement)
             .components(components);
   }
