@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import young.blaybus.api_response.ApiResponse;
+import young.blaybus.domain.center.service.CenterService;
+import young.blaybus.domain.member.request.AdminRequest;
 import young.blaybus.domain.member.request.MemberRequest;
 import young.blaybus.domain.member.service.MemberService;
 
@@ -15,12 +17,20 @@ import young.blaybus.domain.member.service.MemberService;
 public class MemberController {
 
     private final MemberService memberService;
+    private final CenterService centerService;
 
-    // 스탭별로 회원가입 진행 (제일 끝 단계는 회원가입을 진행 -> DB에 저장)
-    @PostMapping("/join")
+    @PostMapping("/worker/join")
     @ResponseBody
-    public ApiResponse<?> workerJoinThirdStep(@RequestBody MemberRequest memberRequest) {
-        memberService.registerMember(memberRequest);
+    public ApiResponse<?> workerJoin(@RequestBody MemberRequest memberRequest) {
+        memberService.workerRegisterMember(memberRequest);
+        return ApiResponse.onSuccess();
+    }
+
+    @PostMapping("/admin/join")
+    @ResponseBody
+    public ApiResponse<?> adminJoin(@RequestBody AdminRequest adminRequest) {
+        memberService.adminRegisterMember(adminRequest);
+        centerService.registerCenter(adminRequest.center(), adminRequest);
         return ApiResponse.onSuccess();
     }
 
