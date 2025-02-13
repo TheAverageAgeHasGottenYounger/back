@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,7 +19,6 @@ import young.blaybus.domain.member.security.redis.RedisService;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(securedEnabled = true) // 각 Url에 권한을 주기 위함인데 보류
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -38,7 +36,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-//                            "/", "/api/v3/member/admin/join", "/api/v3/member/worker/join",
+                            "/", "/api/v3/member/admin/join", "/api/v3/member/worker/join",
                             "/api/v3/member/duplication/id", "/api/v3/member/duplication/name", "/api/v3/member/login"
                         ).permitAll().requestMatchers( // Swagger 관련 Url 요청 처리
                             "/swagger-ui/**",

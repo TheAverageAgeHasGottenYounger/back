@@ -47,7 +47,7 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
         String role = userDetails.getAuthorities().iterator().next().getAuthority();
         String accessToken = jwtProvider.createAccessToken(userId, role);
         String refreshToken = jwtProvider.createRefreshToken(userId, role);
-        redisService.saveRefreshToken(userId, refreshToken, (1000 * 1000));
+        redisService.saveRefreshToken(userId, refreshToken);
 
         response.addHeader("Authorization", "Bearer " + accessToken); // 액세스 토큰 발급
         log.info("액세스 토큰 발급");

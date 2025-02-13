@@ -32,7 +32,7 @@ public class JwtProvider {
                 .setHeaderParam("alg", "HS256")
                 .addClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + (60 * 1000)))
+                .setExpiration(new Date(System.currentTimeMillis() + (1209600 * 1000)))
                 .signWith(secretKey)
                 .compact();
     }
@@ -47,7 +47,7 @@ public class JwtProvider {
                 .setHeaderParam("alg", "HS256")
                 .addClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + (10000 * 1000)))
+                .setExpiration(new Date(System.currentTimeMillis() + (2628000L * 1000)))
                 .signWith(secretKey)
                 .compact();
     }

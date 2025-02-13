@@ -67,6 +67,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String tokenUserId = jwtProvider.getUserId(accessToken);
                     String refreshToken = redisService.getRefreshToken(tokenUserId);
 
+                    // 리프레쉬 토큰의 유효시간이 지났을 경우
+                    if (!jwtProvider.getValidateToken(refreshToken)) {
+                        redisService.deleteRefreshToken(tokenUserId);
+                        Objects.requireNonNull(filterChain).doFilter(request, response);
+                        return;
+                    }
+
                     if (refreshToken != null) {
                         AuthenticatedUserDetailsService customUserDetailsService = new AuthenticatedUserDetailsService(memberRepository);
                         AuthenticatedUserDetails userDetails = (AuthenticatedUserDetails) customUserDetailsService.loadUserByUsername(tokenUserId);
@@ -78,9 +85,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                         // 재발급
-                        if (response != null) {
+                        if (response != null && jwtProvider.getValidateToken(refreshToken)) {
                             response.addHeader("Authorization", "Bearer " + refreshToken);
-                            System.out.println("리프레쉬 토큰: " + refreshToken);
                             log.info("액세스 토큰 재발급");
                         }
                         Objects.requireNonNull(filterChain).doFilter(request, response);
