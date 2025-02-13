@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import young.blaybus.domain.center.Center;
 import young.blaybus.domain.center.repository.CenterRepository;
-import young.blaybus.domain.center.request.CenterRequest;
+import young.blaybus.domain.center.request.CreateCenterRequest;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.repository.MemberRepository;
-import young.blaybus.domain.member.request.AdminRequest;
+import young.blaybus.domain.member.request.CreateAdminRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,27 +24,13 @@ public class CenterService {
 
     // 센터 등록
     @Transactional(rollbackOn = Exception.class)
-    public void registerCenter(CenterRequest centerRequest, AdminRequest adminRequest) {
+    public void registerCenter(CreateCenterRequest centerRequest, CreateAdminRequest adminRequest) {
         LocalDateTime now = LocalDateTime.now();
 
         // 회원 리스트
         List<Member> members = new ArrayList<>();
         Member member = memberRepository.findById(adminRequest.id()).orElse(null);
-
-//        Member memberss = Member.builder()
-//                .id(adminRequest.id())
-//                .password(bCryptPasswordEncoder.encode(adminRequest.password()))
-//                .name(adminRequest.name())
-//                .phoneNumber(adminRequest.phoneNumber())
-//                .address(adminRequest.address())
-//                .profileUrl("")
-//                .role(role)
-//                .createdTime(now)
-//                .build();
-
-        if (member != null) {
-            members.add(member);
-        }
+        if (member != null) members.add(member);
 
         Center center = Center.builder()
                 .name(centerRequest.name())
@@ -64,14 +50,13 @@ public class CenterService {
                     .id(member.getId())
                     .center(center)
                     .build();
-
             memberRepository.save(adminMember);
         }
     }
 
+    // 센터 이름으로 센터 검색
     public Center findCenterName(String name) {
         Optional<Center> center = centerRepository.findByNameContaining(name);
         return center.orElse(null);
     }
-
 }

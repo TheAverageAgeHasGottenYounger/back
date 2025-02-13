@@ -31,7 +31,7 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 관리자 회원 등록
-    public void adminRegisterMember(AdminRequest adminRequest) {
+    public void adminRegisterMember(CreateAdminRequest adminRequest) {
         LocalDateTime now = LocalDateTime.now();
         MemberRole role = MemberRole.ADMIN;
         Member member = Member.builder()
@@ -51,7 +51,7 @@ public class MemberService {
 
     // 요양보호사 회원 등록
     @Transactional(rollbackOn = Exception.class)
-    public void workerRegisterMember(MemberRequest memberRequest) {
+    public void workerRegisterMember(CreateMemberRequest memberRequest) {
         LocalDateTime now = LocalDateTime.now();
 
         MemberRole role = MemberRole.WORKER;
