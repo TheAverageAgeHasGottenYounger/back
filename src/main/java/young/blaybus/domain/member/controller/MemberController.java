@@ -2,6 +2,8 @@ package young.blaybus.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import young.blaybus.api_response.ApiResponse;
@@ -16,6 +18,7 @@ import young.blaybus.domain.member.service.MemberService;
 @Tag(name = "회원 관련 API")
 public class MemberController {
 
+    private final AuthenticationManager authenticationManager;
     private final MemberService memberService;
     private final CenterService centerService;
 
@@ -49,6 +52,12 @@ public class MemberController {
     public ApiResponse<?> duplicationNameCheck(@RequestParam String memberName) {
         String duplication = memberService.duplicationNameCheck(memberName);
         if (duplication == null) return ApiResponse.onFailure("409", "이름이 중복됩니다.", "");
+        return ApiResponse.onSuccess();
+    }
+
+    @PostMapping("/login")
+    @ResponseBody
+    public ApiResponse<?> login(@RequestParam String id, @RequestParam String password) {
         return ApiResponse.onSuccess();
     }
 
