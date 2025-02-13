@@ -2,9 +2,14 @@ package young.blaybus.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import java.util.List;
+
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -30,26 +35,25 @@ public class SwaggerConfig implements WebMvcConfigurer {
   @Bean
   public OpenAPI KoalaServerAPI() {
     Info info = new Info()
-      .title("요양보호사-노인 매칭 서비스 API 명세서")
-      .description("Blaybus API")
-      .version("v3");
+            .title("요양보호사-노인 매칭 서비스 API 명세서")
+            .description("Blaybus API")
+            .version("v3");
 
-    // todo JWT 구현 완료 후 주석 해제
+    String jwtSchemeName = "JWT TOKEN";
+    SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemeName);
 
-//    String jwtSchemeName = "JWT TOKEN";
-//    SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemeName);
-
-//    Components components = new Components()
-//      .addSecuritySchemes(jwtSchemeName, new SecurityScheme()
-//        .name(jwtSchemeName)
-//        .type(SecurityScheme.Type.HTTP)
-//        .scheme("bearer")
-//        .bearerFormat("JWT"));
+    Components components = new Components()
+                  .addSecuritySchemes(jwtSchemeName, new SecurityScheme()
+                  .name("Authorization")
+                  .type(SecurityScheme.Type.HTTP)
+                  .scheme("bearer")
+                  .bearerFormat("JWT")
+                  .in(SecurityScheme.In.HEADER));
 
     return new OpenAPI()
-      .info(info)
-//       .addSecurityItem(securityRequirement)
-//       .components(components);
-      ;
+            .info(info)
+            .addServersItem(new Server().url("/"))
+            .addSecurityItem(securityRequirement)
+            .components(components);
   }
 }
