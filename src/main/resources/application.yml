@@ -14,7 +14,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -29,6 +29,9 @@ spring:
       repositories:
         enabled: false
 
+sk:
+  app-key: ${SK_APP_KEY}
+  url: https://apis.openapi.sk.com/tmap
 
 jwt:
   secret: ${JWT}
