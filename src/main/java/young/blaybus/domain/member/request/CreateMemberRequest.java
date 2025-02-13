@@ -1,13 +1,15 @@
 package young.blaybus.domain.member.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.web.multipart.MultipartFile;
 import young.blaybus.domain.certificate.request.CreateCertificateRequest;
 
 import java.util.List;
 
 @Schema(description = "요양보호사 회원가입 요청 객체")
 public record CreateMemberRequest(
-    String profileImage,
+    @Schema(description = "프로필 사진")
+    MultipartFile profileImage,
 
     @Schema(description = "이름")
     String name,
@@ -26,9 +28,6 @@ public record CreateMemberRequest(
 
     @Schema(description = "비밀번호")
     String password,
-
-    @Schema(description = "권한")
-    String role,
 
     @Schema(description = "차량 소유 여부")
     Boolean carYn,

@@ -17,10 +17,6 @@ import young.blaybus.domain.member.request.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-/**
- * MemberService : 회원에 대한 서비스 제공
- */
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -41,7 +37,7 @@ public class MemberService {
                 .phoneNumber(adminRequest.phoneNumber())
                 .address(adminRequest.address())
                 .carYn(adminRequest.carYn())
-                .profileUrl("")
+                .profileUrl("") // S3 구성되면 파일 업로드 구현
                 .role(role)
                 .createdTime(now)
                 .build();
@@ -62,7 +58,7 @@ public class MemberService {
                 .name(memberRequest.name())
                 .phoneNumber(memberRequest.phoneNumber())
                 .address(memberRequest.address())
-                .profileUrl("")
+                .profileUrl("") // S3 구성되면 파일 업로드 구현
                 .role(role)
                 .carYn(memberRequest.carYn())
                 .dementiaEducationYn(memberRequest.dementiaEducationYn())

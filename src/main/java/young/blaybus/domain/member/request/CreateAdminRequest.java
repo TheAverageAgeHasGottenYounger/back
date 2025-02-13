@@ -1,11 +1,13 @@
 package young.blaybus.domain.member.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.web.multipart.MultipartFile;
 import young.blaybus.domain.center.request.CreateCenterRequest;
 
 @Schema(description = "관리자 회원가입 요청 객체")
 public record CreateAdminRequest(
-    String profileImage,
+    @Schema(description = "프로필 사진")
+    MultipartFile profileImage,
 
     @Schema(description = "이름")
     String name,
@@ -24,9 +26,6 @@ public record CreateAdminRequest(
 
     @Schema(description = "비밀번호")
     String password,
-
-    @Schema(description = "권한")
-    String role,
 
     @Schema(description = "센터")
     CreateCenterRequest center
