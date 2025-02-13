@@ -30,7 +30,7 @@ spring:
         enabled: false
 
 sk:
-  app-key: LlNa8We79R8TZNV844y6Z3SvCoIkublE6ugLQHiA
+  app-key: ${SK_APP_KEY}
   url: https://apis.openapi.sk.com/tmap
 
 jwt:
