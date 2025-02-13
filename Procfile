@@ -1,1 +1,1 @@
-web: appstart
+web: java -Dserver.port=$PORT -jar application.jar
