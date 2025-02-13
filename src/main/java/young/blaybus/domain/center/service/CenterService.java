@@ -2,11 +2,13 @@ package young.blaybus.domain.center.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import young.blaybus.domain.center.Center;
 import young.blaybus.domain.center.repository.CenterRepository;
 import young.blaybus.domain.center.request.CreateCenterRequest;
 import young.blaybus.domain.member.Member;
+import young.blaybus.domain.member.enums.MemberRole;
 import young.blaybus.domain.member.repository.MemberRepository;
 import young.blaybus.domain.member.request.CreateAdminRequest;
 
@@ -21,6 +23,7 @@ public class CenterService {
 
     private final CenterRepository centerRepository;
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 센터 등록
     @Transactional(rollbackOn = Exception.class)
@@ -46,9 +49,18 @@ public class CenterService {
         centerRepository.save(center);
 
         if (member != null) {
+            MemberRole role = MemberRole.ADMIN;
             Member adminMember = Member.builder()
-                    .id(member.getId())
+                    .id(adminRequest.id())
+                    .password(bCryptPasswordEncoder.encode(adminRequest.password()))
+                    .name(adminRequest.name())
+                    .phoneNumber(adminRequest.phoneNumber())
+                    .address(adminRequest.address())
+                    .carYn(adminRequest.carYn())
+                    .profileUrl("")
+                    .role(role)
                     .center(center)
+                    .createdTime(now)
                     .build();
             memberRepository.save(adminMember);
         }

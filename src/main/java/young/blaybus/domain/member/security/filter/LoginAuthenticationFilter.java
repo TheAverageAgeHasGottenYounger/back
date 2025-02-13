@@ -24,7 +24,7 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
     private final RedisService redisService;
 
     public LoginAuthenticationFilter(JwtProvider jwtProvider, AuthenticationManager authenticationManager, RedisService redisService) {
-        super(new AntPathRequestMatcher("/api/v3/member/login", "POST"));
+        super(new AntPathRequestMatcher("/member/login", "POST"));
         this.jwtProvider = jwtProvider;
         this.authenticationManager = authenticationManager;
         this.redisService = redisService;

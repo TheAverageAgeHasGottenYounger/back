@@ -40,6 +40,7 @@ public class MemberService {
                 .name(adminRequest.name())
                 .phoneNumber(adminRequest.phoneNumber())
                 .address(adminRequest.address())
+                .carYn(adminRequest.carYn())
                 .profileUrl("")
                 .role(role)
                 .createdTime(now)

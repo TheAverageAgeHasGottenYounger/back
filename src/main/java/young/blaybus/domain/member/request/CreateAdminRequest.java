@@ -16,6 +16,9 @@ public record CreateAdminRequest(
     @Schema(description = "주소")
     String address,
 
+    @Schema(description = "차량 소유 여부")
+    Boolean carYn,
+
     @Schema(description = "아이디")
     String id,
 

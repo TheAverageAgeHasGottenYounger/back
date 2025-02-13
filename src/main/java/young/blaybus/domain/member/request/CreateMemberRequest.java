@@ -30,7 +30,7 @@ public record CreateMemberRequest(
     @Schema(description = "권한")
     String role,
 
-    @Schema(description = "차량 유 여부")
+    @Schema(description = "차량 소유 여부")
     Boolean carYn,
 
     @Schema(description = "치매 교육 여부")
