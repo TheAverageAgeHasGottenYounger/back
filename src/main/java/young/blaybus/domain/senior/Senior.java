@@ -1,8 +1,7 @@
 package young.blaybus.domain.senior;
 
-import jakarta.persistence.CollectionTable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -13,14 +12,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -30,14 +31,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import young.blaybus.domain.center.Center;
 import young.blaybus.domain.senior.enums.CareGrade;
 import young.blaybus.domain.senior.enums.Sex;
-import young.blaybus.util.enums.DayOfWeek;
-import young.blaybus.util.enums.assist.FoodAssist;
-import young.blaybus.util.enums.assist.LifeAssist;
-import young.blaybus.util.enums.assist.MoveAssist;
-import young.blaybus.util.enums.assist.ToiletAssist;
+import young.blaybus.util.enums.CareStyle;
 
 @Entity
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -58,6 +55,7 @@ public class Senior {
   @Comment("장기요양 등급")
   private CareGrade careGrade;
 
+  @Enumerated(value = EnumType.STRING)
   @Comment("성별")
   private Sex sex;
 
@@ -84,30 +82,28 @@ public class Senior {
   @JoinColumn(name = "center_id")
   private Center center;
 
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name="senior_day", joinColumns = @JoinColumn(name= "senior_id", referencedColumnName = "id"))
   @Enumerated(value = EnumType.STRING)
-  private Set<DayOfWeek> daySet = new HashSet<>();
+  @Comment("돌봄 스타일")
+  private CareStyle careStyle;
 
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name="senior_food_assist", joinColumns = @JoinColumn(name= "senior_id", referencedColumnName = "id"))
-  @Enumerated(value = EnumType.STRING)
-  private Set<FoodAssist> foodAssistSet = new HashSet<>();
+  @Default
+  @OneToMany(mappedBy = "senior", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<SeniorDay> dayList = new ArrayList<>();
 
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name="senior_move_assist", joinColumns = @JoinColumn(name= "senior_id", referencedColumnName = "id"))
-  @Enumerated(value = EnumType.STRING)
-  private Set<MoveAssist> moveAssistSet = new HashSet<>();
+  @Default
+  @OneToMany(mappedBy = "senior", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<SeniorFoodAssist> foodAssistList = new ArrayList<>();
 
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name="senior_toilet_assist", joinColumns = @JoinColumn(name= "senior_id", referencedColumnName = "id"))
-  @Enumerated(value = EnumType.STRING)
-  private Set<ToiletAssist> toiletAssistSet = new HashSet<>();
+  @Default
+  @OneToMany(mappedBy = "senior", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<SeniorMoveAssist> moveAssistList = new ArrayList<>();
 
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name="senior_life_assist", joinColumns = @JoinColumn(name= "senior_id", referencedColumnName = "id"))
-  @Enumerated(value = EnumType.STRING)
-  private Set<LifeAssist> lifeAssistSet = new HashSet<>();
+  @Default
+  @OneToMany(mappedBy = "senior", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<SeniorToiletAssist> toiletAssistList = new ArrayList<>();
 
+  @Default
+  @OneToMany(mappedBy = "senior", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<SeniorLifeAssist> lifeAssistList = new ArrayList<>();
 
 }
