@@ -26,7 +26,6 @@ public class EnumService {
       Stream.of(DayOfWeek.values())
         .map(value -> EnumDto.builder()
           .code(value.name())
-          .value(value.getValue())
           .build()
         )
         .toList();
