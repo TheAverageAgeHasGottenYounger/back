@@ -1,4 +1,4 @@
-package young.blaybus.domain.center.request;
+package young.blaybus.domain.center.controller.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,8 +16,14 @@ public record CreateCenterRequest(
     @Schema(description = "운영 기간")
     String operationPeriod,
 
-    @Schema(description = "주소")
-    String address,
+    @Schema(description = "시/도")
+    String city,
+
+    @Schema(description = "구/군")
+    String gu,
+
+    @Schema(description = "동")
+    String dong,
 
     @Schema(description = "한줄 소개")
     String introduction

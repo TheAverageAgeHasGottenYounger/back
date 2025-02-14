@@ -1,14 +1,7 @@
 package young.blaybus.domain.center;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +15,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import young.blaybus.config.jpa.BooleanToYNConverter;
+import young.blaybus.domain.address.Address;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.senior.Senior;
 
@@ -51,8 +45,9 @@ public class Center {
   @Comment("운영 기간")
   private String operationPeriod;
 
+  @Embedded
   @Comment("주소")
-  private String address;
+  private Address address;
 
   @Comment("한 줄 소개")
   private String introduction;

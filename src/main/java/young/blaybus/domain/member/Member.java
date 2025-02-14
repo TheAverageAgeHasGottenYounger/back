@@ -1,15 +1,7 @@
 package young.blaybus.domain.member;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,6 +14,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import young.blaybus.config.jpa.BooleanToYNConverter;
 import young.blaybus.config.jpa.CryptoConverter;
+import young.blaybus.domain.address.Address;
 import young.blaybus.domain.center.Center;
 import young.blaybus.domain.member.enums.MemberRole;
 
@@ -46,8 +39,9 @@ public class Member {
   @Comment("전화번호")
   private String phoneNumber;
 
+  @Embedded
   @Comment("주소")
-  private String address;
+  private Address address;
 
   @Comment("프로필 이미지")
   private String profileUrl;
