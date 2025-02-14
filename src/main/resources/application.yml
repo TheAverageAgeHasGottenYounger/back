@@ -49,18 +49,18 @@ jwt:
 #        smtp.ssl.enable: true
 #        smtp.ssl.trust: smtp.naver.com
 
-#cloud:
-#  aws:
-#    credentials:
-#      access-key: ${AWS_ACCESS_KEY}
-#      secret-key: ${AWS_SECRET_KEY}
-#    s3:
-#      bucket: ${AWS_S3_BUCKET}
-#    region:
-#      static: ap-northeast-2
-#      auto: false
-#    stack:
-#      auto: false
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
 
 crypto:
   private-key: ${CRYPTO_PRIVATE_KEY}
