@@ -1,33 +1,38 @@
 package young.blaybus.domain.member.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import young.blaybus.domain.center.request.CreateCenterRequest;
 
+@Getter
+@Setter
+@ToString
 @Schema(description = "관리자 회원가입 요청 객체")
-public record CreateAdminRequest(
-    String profileImage,
-
-    @Schema(description = "이름")
-    String name,
+public class CreateAdminRequest {
 
     @Schema(description = "전화번호")
-    String phoneNumber,
+    private String phoneNumber;
 
-    @Schema(description = "주소")
-    String address,
+    @Schema(description = "주소 - 시")
+    private String city;
+
+    @Schema(description = "주소 - 구")
+    private String gu;
+
+    @Schema(description = "주소 - 동")
+    private String dong;
 
     @Schema(description = "차량 소유 여부")
-    Boolean carYn,
+    private Boolean carYn;
 
     @Schema(description = "아이디")
-    String id,
+    private String id;
 
     @Schema(description = "비밀번호")
-    String password,
-
-    @Schema(description = "권한")
-    String role,
+    private String password;
 
     @Schema(description = "센터")
-    CreateCenterRequest center
-) { }
+    private CreateCenterRequest center;
+}

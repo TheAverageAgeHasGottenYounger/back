@@ -7,7 +7,6 @@ import java.util.List;
 
 @Schema(description = "요양보호사 회원가입 요청 객체")
 public record CreateMemberRequest(
-    String profileImage,
 
     @Schema(description = "이름")
     String name,
@@ -15,8 +14,14 @@ public record CreateMemberRequest(
     @Schema(description = "전화번호")
     String phoneNumber,
 
-    @Schema(description = "주소")
-    String address,
+    @Schema(description = "주소 - 시")
+    String city,
+
+    @Schema(description = "주소 - 구")
+    String gu,
+
+    @Schema(description = "주소 - 동")
+    String dong,
 
     @Schema(description = "자격증")
     List<CreateCertificateRequest> certificate,
@@ -26,9 +31,6 @@ public record CreateMemberRequest(
 
     @Schema(description = "비밀번호")
     String password,
-
-    @Schema(description = "권한")
-    String role,
 
     @Schema(description = "차량 소유 여부")
     Boolean carYn,

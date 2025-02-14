@@ -59,7 +59,6 @@ public class SecurityConfig {
     return authenticationConfiguration.getAuthenticationManager();
   }
 
-  // 비밀번호 BCrypt 방식 암호화
   @Bean
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();

@@ -32,7 +32,7 @@ public class CenterService {
 
         // 회원 리스트
         List<Member> members = new ArrayList<>();
-        Member member = memberRepository.findById(adminRequest.id()).orElse(null);
+        Member member = memberRepository.findById(adminRequest.getId()).orElse(null);
         if (member != null) members.add(member);
 
         Center center = Center.builder()
@@ -50,13 +50,25 @@ public class CenterService {
 
         if (member != null) {
             MemberRole role = MemberRole.ADMIN;
+//            Member adminMember = Member.builder()
+//                    .id(adminRequest.id())
+//                    .password(bCryptPasswordEncoder.encode(adminRequest.password()))
+//                    .name(adminRequest.name())
+//                    .phoneNumber(adminRequest.phoneNumber())
+//                    .address(adminRequest.address())
+//                    .carYn(adminRequest.carYn())
+//                    .profileUrl("")
+//                    .role(role)
+//                    .center(center)
+//                    .createdTime(now)
+//                    .build();
+
             Member adminMember = Member.builder()
-                    .id(adminRequest.id())
-                    .password(bCryptPasswordEncoder.encode(adminRequest.password()))
-                    .name(adminRequest.name())
-                    .phoneNumber(adminRequest.phoneNumber())
-                    .address(adminRequest.address())
-                    .carYn(adminRequest.carYn())
+                    .id(adminRequest.getId())
+                    .password(bCryptPasswordEncoder.encode(adminRequest.getPassword()))
+                    .phoneNumber(adminRequest.getPhoneNumber())
+//                    .address(adminRequest.getAddress())
+                    .carYn(adminRequest.getCarYn())
                     .profileUrl("")
                     .role(role)
                     .center(center)
