@@ -30,41 +30,81 @@ public class CenterService {
     // 센터 등록
     @Transactional(rollbackOn = Exception.class)
     public void registerCenter(CreateCenterRequest centerRequest, CreateAdminRequest adminRequest) {
-        LocalDateTime now = LocalDateTime.now();
+        Optional<List<Center>> centers = centerRepository.findByNameContaining(centerRequest.name());
 
-        // 회원 리스트
-        List<Member> members = new ArrayList<>();
-        Member member = memberRepository.findById(adminRequest.id()).orElse(null);
-        if (member != null) members.add(member);
+        Center registerCenter = null;
+        boolean isCenterRegister = false;
+        if (centers.isPresent()) {
+            for (Center center : centers.get()) {
+                if (center.getName().equals(centerRequest.name())) {
+                    registerCenter = center;
+                    isCenterRegister = true;
+                }
+            }
+        }
 
-        Center center = Center.builder()
-                .name(centerRequest.name())
-                .bathCarYn(centerRequest.bathCarYn())
-                .grade(centerRequest.grade())
-                .operationPeriod(centerRequest.operationPeriod())
-                .address(new Address(centerRequest.city(), centerRequest.gu(), centerRequest.dong(), null))
-                .introduction(centerRequest.introduction())
-                .createdTime(now)
-                .memberList(members)
-                .build();
+        // 해당 센터가 등록이 되어 있지 않을 경우
+        if (!isCenterRegister) {
+            LocalDateTime now = LocalDateTime.now();
 
-        centerRepository.save(center);
+            // 회원 리스트
+            List<Member> members = new ArrayList<>();
+            Member member = memberRepository.findById(adminRequest.id()).orElse(null);
+            if (member != null) members.add(member);
 
-        if (member != null) {
-            MemberRole role = MemberRole.ADMIN;
-            Member adminMember = Member.builder()
-                    .id(adminRequest.id())
-                    .password(bCryptPasswordEncoder.encode(adminRequest.password()))
-                    .phoneNumber(adminRequest.phoneNumber())
-                    .address(new Address(adminRequest.city(), adminRequest.gu(), adminRequest.dong(), null))
-                    .carYn(adminRequest.carYn())
-                    .profileUrl("")
-                    .role(role)
-                    .center(center)
+            Center center = Center.builder()
+                    .name(centerRequest.name())
+                    .bathCarYn(centerRequest.bathCarYn())
+                    .grade(centerRequest.grade())
+                    .operationPeriod(centerRequest.operationPeriod())
+                    .address(new Address(centerRequest.city(), centerRequest.gu(), centerRequest.dong(), null))
+                    .introduction(centerRequest.introduction())
                     .createdTime(now)
+                    .memberList(members)
                     .build();
 
-            memberRepository.save(adminMember);
+            centerRepository.save(center);
+
+            if (member != null) {
+                MemberRole role = MemberRole.ADMIN;
+                Member adminMember = Member.builder()
+                        .id(adminRequest.id())
+                        .password(bCryptPasswordEncoder.encode(adminRequest.password()))
+                        .phoneNumber(adminRequest.phoneNumber())
+                        .address(new Address(adminRequest.city(), adminRequest.gu(), adminRequest.dong(), null))
+                        .carYn(adminRequest.carYn())
+                        .profileUrl("")
+                        .role(role)
+                        .center(center)
+                        .createdTime(now)
+                        .build();
+
+                memberRepository.save(adminMember);
+            }
+        } else {
+            LocalDateTime now = LocalDateTime.now();
+
+            // 회원 리스트
+            List<Member> members = new ArrayList<>();
+            Member member = memberRepository.findById(adminRequest.id()).orElse(null);
+            if (member != null) members.add(member);
+
+            if (member != null) {
+                MemberRole role = MemberRole.ADMIN;
+                Member adminMember = Member.builder()
+                        .id(adminRequest.id())
+                        .password(bCryptPasswordEncoder.encode(adminRequest.password()))
+                        .phoneNumber(adminRequest.phoneNumber())
+                        .address(new Address(adminRequest.city(), adminRequest.gu(), adminRequest.dong(), null))
+                        .carYn(adminRequest.carYn())
+                        .profileUrl("")
+                        .role(role)
+                        .center(registerCenter)
+                        .createdTime(now)
+                        .build();
+
+                memberRepository.save(adminMember);
+            }
         }
     }
 
