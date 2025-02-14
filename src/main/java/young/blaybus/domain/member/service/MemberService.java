@@ -5,14 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import young.blaybus.domain.address.Address;
 import young.blaybus.domain.certificate.Certificate;
 import young.blaybus.domain.certificate.enums.CertificateGrade;
 import young.blaybus.domain.certificate.enums.CertificateType;
 import young.blaybus.domain.certificate.repository.CertificateRepository;
 import young.blaybus.domain.member.Member;
+import young.blaybus.domain.member.controller.request.CreateAdminRequest;
+import young.blaybus.domain.member.controller.request.CreateMemberRequest;
 import young.blaybus.domain.member.enums.MemberRole;
 import young.blaybus.domain.member.repository.MemberRepository;
-import young.blaybus.domain.member.request.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -30,24 +32,12 @@ public class MemberService {
     public void adminRegisterMember(CreateAdminRequest adminRequest) {
         LocalDateTime now = LocalDateTime.now();
         MemberRole role = MemberRole.ADMIN;
-//        Member member = Member.builder()
-//                .id(adminRequest.id())
-//                .password(bCryptPasswordEncoder.encode(adminRequest.password()))
-//                .name(adminRequest.name())
-//                .phoneNumber(adminRequest.phoneNumber())
-//                .address(adminRequest.address())
-//                .carYn(adminRequest.carYn())
-//                .profileUrl("") // S3 구성되면 파일 업로드 구현
-//                .role(role)
-//                .createdTime(now)
-//                .build();
-
         Member member = Member.builder()
-                .id(adminRequest.getId())
-                .password(bCryptPasswordEncoder.encode(adminRequest.getPassword()))
-                .phoneNumber(adminRequest.getPhoneNumber())
-//                .address(adminRequest.getAddress())
-                .carYn(adminRequest.getCarYn())
+                .id(adminRequest.id())
+                .password(bCryptPasswordEncoder.encode(adminRequest.password()))
+                .phoneNumber(adminRequest.phoneNumber())
+                .address(new Address(adminRequest.city(), adminRequest.gu(), adminRequest.dong(), null))
+                .carYn(adminRequest.carYn())
                 .profileUrl("") // S3 구성되면 파일 업로드 구현
                 .role(role)
                 .createdTime(now)
@@ -68,7 +58,7 @@ public class MemberService {
                 .password(bCryptPasswordEncoder.encode(memberRequest.password()))
                 .name(memberRequest.name())
                 .phoneNumber(memberRequest.phoneNumber())
-//                .address(memberRequest.address())
+                .address(new Address(memberRequest.city(), memberRequest.gu(), memberRequest.dong(), null))
                 .profileUrl("") // S3 구성되면 파일 업로드 구현
                 .role(role)
                 .carYn(memberRequest.carYn())

@@ -1,4 +1,4 @@
-package young.blaybus.domain.member.request;
+package young.blaybus.domain.member.controller.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import young.blaybus.domain.certificate.request.CreateCertificateRequest;
@@ -14,13 +14,13 @@ public record CreateMemberRequest(
     @Schema(description = "전화번호")
     String phoneNumber,
 
-    @Schema(description = "주소 - 시")
+    @Schema(description = "시/도")
     String city,
 
-    @Schema(description = "주소 - 구")
+    @Schema(description = "구/군")
     String gu,
 
-    @Schema(description = "주소 - 동")
+    @Schema(description = "동")
     String dong,
 
     @Schema(description = "자격증")

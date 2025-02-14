@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.center.service.CenterService;
-import young.blaybus.domain.member.request.CreateAdminRequest;
-import young.blaybus.domain.member.request.CreateMemberRequest;
-import young.blaybus.domain.member.security.Utils.SecurityUtils;
+import young.blaybus.domain.member.controller.request.CreateAdminRequest;
+import young.blaybus.domain.member.controller.request.CreateMemberRequest;
+import young.blaybus.domain.member.security.SecurityUtils;
 import young.blaybus.domain.member.service.MemberService;
 
 @RestController
@@ -42,7 +42,7 @@ public class MemberController {
         @RequestPart(value = "adminRequest") @Valid CreateAdminRequest adminRequest
     ) {
         memberService.adminRegisterMember(adminRequest);
-        centerService.registerCenter(adminRequest.getCenter(), adminRequest);
+        centerService.registerCenter(adminRequest.center(), adminRequest);
 
         return ApiResponse.onSuccess();
     }
