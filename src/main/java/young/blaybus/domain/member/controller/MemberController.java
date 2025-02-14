@@ -11,6 +11,7 @@ import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.center.service.CenterService;
 import young.blaybus.domain.member.request.CreateAdminRequest;
 import young.blaybus.domain.member.request.CreateMemberRequest;
+import young.blaybus.domain.member.security.Utils.SecurityUtils;
 import young.blaybus.domain.member.service.MemberService;
 
 @RestController
@@ -59,6 +60,7 @@ public class MemberController {
     @GetMapping(value = "/duplication-name")
     @Operation(summary = "회원 이름 중복 체크")
     public ApiResponse<?> duplicationNameCheck(@RequestParam String memberName) {
+        System.out.println(SecurityUtils.getCurrentMemberName());
         String duplication = memberService.duplicationNameCheck(memberName);
         if (duplication == null) return ApiResponse.onFailure("409", "이름이 중복됩니다.", "");
         return ApiResponse.onSuccess();

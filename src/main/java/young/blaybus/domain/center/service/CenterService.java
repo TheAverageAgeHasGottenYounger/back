@@ -79,8 +79,10 @@ public class CenterService {
     }
 
     // 센터 이름으로 센터 검색
-    public Center findCenterName(String name) {
+    public boolean isRegistrationCenterByName(String name) {
         Optional<Center> center = centerRepository.findByNameContaining(name);
-        return center.orElse(null);
+        return center.isPresent();
     }
+
+
 }
