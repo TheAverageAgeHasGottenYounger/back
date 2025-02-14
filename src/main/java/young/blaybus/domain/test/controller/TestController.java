@@ -1,5 +1,6 @@
 package young.blaybus.domain.test.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ import young.blaybus.domain.test.service.TestService;
  * @RequestMapping, @Tag 는 controller별로 수정해주세요!
  * ex) @RequestMapping("/member"), @Tag(name = "멤버 관련 API")
  */
+@Hidden
 @RestController
 @RequestMapping("/test")
 @RequiredArgsConstructor

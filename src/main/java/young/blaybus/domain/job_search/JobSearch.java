@@ -1,22 +1,11 @@
 package young.blaybus.domain.job_search;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +16,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import young.blaybus.domain.member.Member;
-import young.blaybus.util.enums.DayOfWeek;
 
 @Entity
 @Builder
@@ -61,9 +49,12 @@ public class JobSearch {
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name="job_search_day", joinColumns = @JoinColumn(name= "job_search_id", referencedColumnName = "id"))
-  @Enumerated(value = EnumType.STRING)
-  private Set<DayOfWeek> daySet = new HashSet<>();
+  @Builder.Default
+  @OneToMany(mappedBy = "jobSearch", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<JobSearchArea> jobSearchAreas = new ArrayList<>();
+
+  @Builder.Default
+  @OneToMany(mappedBy = "jobSearch", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<JobSearchDay> dayList = new ArrayList<>();
 
 }

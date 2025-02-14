@@ -38,7 +38,7 @@ public class SecurityConfig {
       .requestMatchers(
         "/", "member/admin-join", "/member/worker-join",
         "/member/duplication-id", "/member/duplication-name", "/member/login",
-        "/health", "/center/is-registration", "/matching/request/**"
+        "/health", "/center/is-registration", "/s3"
       ).permitAll().requestMatchers( // Swagger 관련 Url 요청 처리
         "/swagger-ui/**",
         "/v3/api-docs/**",
