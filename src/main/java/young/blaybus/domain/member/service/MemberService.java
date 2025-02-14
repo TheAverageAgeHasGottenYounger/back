@@ -30,13 +30,24 @@ public class MemberService {
     public void adminRegisterMember(CreateAdminRequest adminRequest) {
         LocalDateTime now = LocalDateTime.now();
         MemberRole role = MemberRole.ADMIN;
+//        Member member = Member.builder()
+//                .id(adminRequest.id())
+//                .password(bCryptPasswordEncoder.encode(adminRequest.password()))
+//                .name(adminRequest.name())
+//                .phoneNumber(adminRequest.phoneNumber())
+//                .address(adminRequest.address())
+//                .carYn(adminRequest.carYn())
+//                .profileUrl("") // S3 구성되면 파일 업로드 구현
+//                .role(role)
+//                .createdTime(now)
+//                .build();
+
         Member member = Member.builder()
-                .id(adminRequest.id())
-                .password(bCryptPasswordEncoder.encode(adminRequest.password()))
-                .name(adminRequest.name())
-                .phoneNumber(adminRequest.phoneNumber())
-                .address(adminRequest.address())
-                .carYn(adminRequest.carYn())
+                .id(adminRequest.getId())
+                .password(bCryptPasswordEncoder.encode(adminRequest.getPassword()))
+                .phoneNumber(adminRequest.getPhoneNumber())
+//                .address(adminRequest.getAddress())
+                .carYn(adminRequest.getCarYn())
                 .profileUrl("") // S3 구성되면 파일 업로드 구현
                 .role(role)
                 .createdTime(now)
@@ -57,7 +68,7 @@ public class MemberService {
                 .password(bCryptPasswordEncoder.encode(memberRequest.password()))
                 .name(memberRequest.name())
                 .phoneNumber(memberRequest.phoneNumber())
-                .address(memberRequest.address())
+//                .address(memberRequest.address())
                 .profileUrl("") // S3 구성되면 파일 업로드 구현
                 .role(role)
                 .carYn(memberRequest.carYn())

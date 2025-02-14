@@ -2,8 +2,11 @@ package young.blaybus.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.center.service.CenterService;
 import young.blaybus.domain.member.request.CreateAdminRequest;
@@ -20,24 +23,31 @@ public class MemberController {
     private final CenterService centerService;
 
     // 요양보호사 회원가입
-    @PostMapping("/worker-join")
+    @PostMapping(value = "/worker-join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "요양보호사 회원가입")
-    public ApiResponse<?> workerJoin(@RequestBody CreateMemberRequest memberRequest) {
+    public ApiResponse<?> workerJoin(
+        @RequestPart(value = "profileImageFile", required = false) MultipartFile profileImageFile,
+        @RequestPart(value = "memberRequest") @Valid CreateMemberRequest memberRequest
+    ) {
         memberService.workerRegisterMember(memberRequest);
         return ApiResponse.onSuccess();
     }
 
     // 관리자 회원가입
-    @PostMapping("/admin-join")
+    @PostMapping(value = "/admin-join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "관리자 회원가입")
-    public ApiResponse<?> adminJoin(@RequestBody CreateAdminRequest adminRequest) {
+    public ApiResponse<?> adminJoin(
+        @RequestPart(value = "profileImageFile", required = false) MultipartFile profileImageFile,
+        @RequestPart(value = "adminRequest") @Valid CreateAdminRequest adminRequest
+    ) {
         memberService.adminRegisterMember(adminRequest);
-        centerService.registerCenter(adminRequest.center(), adminRequest);
+        centerService.registerCenter(adminRequest.getCenter(), adminRequest);
+
         return ApiResponse.onSuccess();
     }
 
     // 회원 아이디 중복 체크
-    @GetMapping("/duplication-id")
+    @GetMapping(value = "/duplication-id")
     @Operation(summary = "회원 아이디 중복 체크")
     public ApiResponse<?> duplicationIdCheck(@RequestParam String memberId) {
         String duplication = memberService.duplicationIdCheck(memberId);
@@ -46,7 +56,7 @@ public class MemberController {
     }
 
     // 회원 이름 중복 체크
-    @GetMapping("/duplication-name")
+    @GetMapping(value = "/duplication-name")
     @Operation(summary = "회원 이름 중복 체크")
     public ApiResponse<?> duplicationNameCheck(@RequestParam String memberName) {
         String duplication = memberService.duplicationNameCheck(memberName);
@@ -55,7 +65,7 @@ public class MemberController {
     }
 
     // 로그인
-    @PostMapping("/login")
+    @PostMapping(value = "/login")
     @Operation(summary = "로그인")
     public ApiResponse<?> login(@RequestParam String id, @RequestParam String password) {
         return ApiResponse.onSuccess();

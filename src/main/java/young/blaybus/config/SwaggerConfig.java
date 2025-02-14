@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -22,6 +25,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 public class SwaggerConfig implements WebMvcConfigurer {
+
+  public SwaggerConfig(MappingJackson2HttpMessageConverter converter) {
+    List<MediaType> supportMediaTypes = new ArrayList<>(converter.getSupportedMediaTypes());
+    supportMediaTypes.add(new MediaType("application", "octet-stream"));
+    converter.setSupportedMediaTypes(supportMediaTypes);
+  }
 
   @Override
   public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
