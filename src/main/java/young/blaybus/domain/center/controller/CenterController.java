@@ -16,11 +16,6 @@ public class CenterController {
 
   private final CenterService centerService;
 
-  @GetMapping("/health")
-  public String healthCheck(){
-    return "Hello World";
-  }
-
   @GetMapping("/center/is-registration")
   @Operation(summary = "센터 등록 여부")
   public ApiResponse<?> idRegistration(@RequestParam String centerName) {
