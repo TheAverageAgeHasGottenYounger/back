@@ -1,6 +1,7 @@
 package young.blaybus.domain.member.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import young.blaybus.domain.center.Center;
 import young.blaybus.domain.member.Member;
 
 import java.util.List;
