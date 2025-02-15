@@ -10,7 +10,7 @@ import young.blaybus.domain.matching.service.MatchingService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/matching")
-@Tag(name = "매칭 관리 관련 API")
+@Tag(name = "매칭 현황 관련 API")
 public class MatchingController {
 
     private final MatchingService matchingService;
@@ -25,9 +25,27 @@ public class MatchingController {
         return ApiResponse.onSuccess();
     }
 
+    // 매칭 현황 조회
+    @GetMapping(value = "/request/get/{senior-id}/{worker-id}")
+    public ApiResponse<?> get(@PathVariable("senior-id") String seniorId, @PathVariable("worker-id") String workerId) {
+        return ApiResponse.onSuccess(matchingService.getMatching(workerId, seniorId));
+    }
+
+    // 매칭 현황 요양보호사 리스트 조회 -> 관리자 쪽에서 요양보호사 매칭 현황 조회
+    @GetMapping(value = "/list/worker/{worker-id}")
+    public ApiResponse<?> getMatchingSeniorList(@PathVariable("worker-id") String workerId) {
+        return ApiResponse.onSuccess(matchingService.getMatchingSeniorList(workerId));
+    }
+
+    // 매칭 현황 어르신 리스트 조회 -> 요양보호사 쪽에서 어르신 매칭 현황 조회
+    @GetMapping(value = "/list/senior/{senior-id}")
+    public ApiResponse<?> getMatchingWorkerList(@PathVariable("senior-id") String seniorId) {
+        return ApiResponse.onSuccess(matchingService.getMatchingWorkerList(seniorId));
+    }
+
     // 수락/거절/조율요청에 따라 Matching 테이블 내 status 컬럼 갱신
     @PatchMapping(value = "/status/update")
-    public ApiResponse<?> correction(@RequestBody PatchStatusRequest statusRequest) {
+    public ApiResponse<?> update(@RequestBody PatchStatusRequest statusRequest) {
         matchingService.matchingStatusPatch(statusRequest);
         return ApiResponse.onSuccess();
     }
