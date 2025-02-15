@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import young.blaybus.config.FeignClientConfig;
-import young.blaybus.map.response.GeocodingResponse;
-import young.blaybus.map.response.MatrixResponse;
+import young.blaybus.map.controller.response.geocoding.GeocodingResponse;
+import young.blaybus.map.controller.response.poi.ListPoiResponse;
+import young.blaybus.map.controller.response.matrix.MatrixResponse;
 
 @FeignClient(name = "sk", url = "${sk.url}", configuration = FeignClientConfig.class)
 public interface SkClient {
@@ -28,6 +29,13 @@ public interface SkClient {
     @RequestHeader("appKey") String appKey,
     @RequestParam("version") int version,
     @RequestBody String requestBody
+  );
+
+  @GetMapping("/pois")
+  ListPoiResponse poi(
+    @RequestHeader("appKey") String appKey,
+    @RequestParam("version") int version,
+    @RequestParam("searchKeyword") String searchKeyword
   );
 
 }

@@ -1,4 +1,4 @@
-package young.blaybus.map.response;
+package young.blaybus.map.controller.response.geocoding;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.repository.MemberRepository;
-import young.blaybus.map.response.Coordinate;
+import young.blaybus.map.controller.request.SearchPoiRequest;
+import young.blaybus.map.controller.response.geocoding.Coordinate;
 import young.blaybus.map.service.MapService;
 
 @SpringBootTest
@@ -15,6 +16,13 @@ public class BlaybusTest {
   private MemberRepository memberRepository;
   @Autowired
   private MapService mapService;
+
+  @Test
+  void poiTest() {
+    SearchPoiRequest request = new SearchPoiRequest("경기도 용인시 수지구 성복역");
+
+    mapService.getPoiList(request);
+  }
 
   @Test
   void geocodingTest() {
