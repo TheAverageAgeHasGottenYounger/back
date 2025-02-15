@@ -1,4 +1,4 @@
-package young.blaybus.map.response;
+package young.blaybus.map.controller.response.poi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Matrix 응답 객체")
-public class MatrixResponse {
+@Schema(description = "POI 응답 DTO")
+public class ListPoiDto {
 
-  @JsonProperty("matrixRoutes")
-  private List<Matrix> matrix;
+  @JsonProperty("poi")
+  private List<PoiDto> poiList;
+
 }

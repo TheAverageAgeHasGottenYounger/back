@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import young.blaybus.map.SkClient;
-import young.blaybus.map.response.Coordinate;
-import young.blaybus.map.response.GeocodingResponse;
-import young.blaybus.map.response.MatrixResponse;
+import young.blaybus.map.controller.request.SearchPoiRequest;
+import young.blaybus.map.controller.response.geocoding.Coordinate;
+import young.blaybus.map.controller.response.geocoding.GeocodingResponse;
+import young.blaybus.map.controller.response.poi.ListPoiResponse;
+import young.blaybus.map.controller.response.matrix.MatrixResponse;
+import young.blaybus.map.controller.response.poi.PoiDto;
 
 @Service
 @RequiredArgsConstructor
@@ -47,9 +50,16 @@ public class MapService {
     );
 
     MatrixResponse matrix = skClient.matrix(appKey, version, requestBody);
-    System.out.println("matrix = " + matrix);
     return matrix.getMatrix().get(0).getDistance();
 
   }
 
+  public ListPoiResponse getPoiList(SearchPoiRequest request) {
+
+    ListPoiResponse response = skClient.poi(appKey, version, request.address());
+    for (PoiDto poi : response.getSearchPoiInfo().getPoiResponse().getPoiList()) {
+      System.out.println("poi = " + poi);
+    }
+    return response;
+  }
 }

@@ -1,21 +1,17 @@
-package young.blaybus.map.response;
+package young.blaybus.map.controller.response.poi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "SK Matrix 응답 객체")
-@ToString
-public class Matrix {
+@Schema(description = "POI 목록 응답 객체")
+public class ListPoiResponse {
 
-  @Schema(description = "거리")
-  private double distance;
-
+  private SearchPoiInfo searchPoiInfo;
 }
