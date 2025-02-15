@@ -48,6 +48,12 @@ public class EnumController {
     return ApiResponse.onSuccess(enumService.getToiletAssistList());
   }
 
+  @GetMapping("/care-style")
+  @Operation(summary = "요양 스타일 목록 조회")
+  public ApiResponse<EnumResponse> getCareStyleList() {
+    return ApiResponse.onSuccess(enumService.getCareStyleList());
+  }
+
 
 
 }

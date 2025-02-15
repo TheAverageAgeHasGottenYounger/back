@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import young.blaybus.domain.enum_api.controller.response.EnumDto;
 import young.blaybus.domain.enum_api.controller.response.EnumResponse;
+import young.blaybus.util.enums.CareStyle;
 import young.blaybus.util.enums.DayOfWeek;
 import young.blaybus.util.enums.assist.FoodAssist;
 import young.blaybus.util.enums.assist.LifeAssist;
@@ -107,4 +108,21 @@ public class EnumService {
       .build();
   }
 
+  /**
+   * 요양 스타일 목록 조회
+   */
+  public EnumResponse getCareStyleList() {
+    List<EnumDto> careStyleList =
+      Stream.of(CareStyle.values())
+        .map(value -> EnumDto.builder()
+          .code(value.name())
+          .value(value.getValue())
+          .build()
+        )
+        .toList();
+
+    return EnumResponse.builder()
+      .enumList(careStyleList)
+      .build();
+  }
 }
