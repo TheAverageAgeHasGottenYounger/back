@@ -11,7 +11,6 @@ import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.center.service.CenterService;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
 import young.blaybus.domain.member.controller.request.CreateMemberRequest;
-import young.blaybus.domain.member.controller.response.GetMember;
 import young.blaybus.domain.member.service.MemberService;
 
 @RestController

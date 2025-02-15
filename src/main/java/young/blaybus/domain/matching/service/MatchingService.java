@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import young.blaybus.domain.matching.Matching;
+import young.blaybus.domain.matching.controller.request.PatchStatusRequest;
 import young.blaybus.domain.matching.enums.MatchingStatus;
 import young.blaybus.domain.matching.repository.MatchingRepository;
 import young.blaybus.domain.member.Member;
@@ -36,6 +37,21 @@ public class MatchingService {
         System.out.println("매칭 상태: " + matching.getStatus());
 
         matchingRepository.save(matching);
+    }
+
+    // 매칭 상태 수정
+    @Transactional(rollbackOn = Exception.class)
+    public void matchingStatusPatch(PatchStatusRequest statusRequest) {
+        Matching matching = matchingRepository.findBySenior_IdAndMember_Id(Long.parseLong(statusRequest.seniorId()), statusRequest.workerId());
+
+        Matching matchingUpdateObject = Matching.builder()
+                .id(matching.getId())
+                .senior(matching.getSenior())
+                .member(matching.getMember())
+                .status(statusRequest.status())
+                .build();
+
+        matchingRepository.save(matchingUpdateObject);
     }
 
 }

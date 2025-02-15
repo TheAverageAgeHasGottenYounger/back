@@ -182,7 +182,7 @@ public class MemberService {
 
                     return getAdmin;
                 }
-            } else return null;
+            }
         }
 
         return null;
