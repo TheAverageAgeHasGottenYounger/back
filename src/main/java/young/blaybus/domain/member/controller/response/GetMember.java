@@ -19,6 +19,9 @@ public class GetMember {
     @Schema(description = "전화번호")
     private String phoneNumber;
 
+    @Schema(description = "프로필 사진")
+    private String profileUrl;
+
     @Schema(description = "시/도")
     private String city;
 

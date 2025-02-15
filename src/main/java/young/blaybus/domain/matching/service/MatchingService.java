@@ -83,6 +83,7 @@ public class MatchingService {
                         .career(matching.getMember().getCareer())
                         .careerPeriod(matching.getMember().getCareerPeriod())
                         .introduction(matching.getMember().getIntroduction())
+                        .profileUrl(matching.getMember().getProfileUrl())
                         .build()
                 )
                 .matchingStatus(matching.getStatus())
@@ -138,6 +139,7 @@ public class MatchingService {
                     .career(m.getMember().getCareer())
                     .careerPeriod(m.getMember().getCareerPeriod())
                     .introduction(m.getMember().getIntroduction())
+                    .profileUrl(m.getMember().getProfileUrl())
                     .build()
             );
         });

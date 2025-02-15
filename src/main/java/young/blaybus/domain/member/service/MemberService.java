@@ -153,6 +153,7 @@ public class MemberService {
                         .gu(member.getAddress().getDistrict())
                         .dong(member.getAddress().getDong())
                         .certificate(getCertificate)
+                        .profileUrl(member.getProfileUrl())
                         .build();
 
                 return getMember;
