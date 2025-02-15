@@ -2,6 +2,7 @@ package young.blaybus.domain.job_search;
 
 import jakarta.persistence.*;
 import lombok.*;
+import young.blaybus.domain.address.Address;
 
 @Entity
 @Getter
@@ -13,9 +14,7 @@ public class JobSearchArea {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String city;
-  private String guGun;
-  private String dong;
+  private Address address;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "job_search_id")

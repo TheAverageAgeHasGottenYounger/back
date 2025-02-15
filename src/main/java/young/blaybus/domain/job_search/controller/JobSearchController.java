@@ -4,12 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import young.blaybus.api_response.ApiResponse;
-import young.blaybus.domain.job_search.request.JobSearchRequest;
+import young.blaybus.domain.job_search.request.CreateJobSearchRequest;
+import young.blaybus.domain.job_search.request.UpdateJobSearchRequest;
+import young.blaybus.domain.job_search.response.DetailJobSearchResponse;
 import young.blaybus.domain.job_search.service.JobSearchService;
 
 @RestController
@@ -21,9 +20,23 @@ public class JobSearchController {
 
   @PostMapping
   @Operation(summary = "구직 정보 입력")
-  public ApiResponse<?> createJobSearch(@RequestBody @Valid JobSearchRequest request) {
+  public ApiResponse<?> createJobSearch(@RequestBody @Valid CreateJobSearchRequest request) {
     jobSearchService.createJobSearch(request);
     return ApiResponse.onSuccess();
   }
 
+  @GetMapping("/{member-id}")
+  @Operation(summary = "회원 ID로 구직 정보 조회")
+  public ApiResponse<DetailJobSearchResponse> getJobSearch(@PathVariable("member-id") String memberId) {
+    return ApiResponse.onSuccess(jobSearchService.getJobSearch(memberId));
+  }
+
+  @PatchMapping("/{job-search-id}")
+  @Operation(summary = "구직 정보 수정")
+  public ApiResponse<?> updateJobSearch(
+          @PathVariable("job-search-id") Long jobSearchId,
+          @RequestBody @Valid UpdateJobSearchRequest request) {
+    jobSearchService.updateJobSearch(jobSearchId, request);
+    return ApiResponse.onSuccess();
+  }
 }
