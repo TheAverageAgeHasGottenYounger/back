@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import young.blaybus.domain.certificate.enums.CertificateType;
 import young.blaybus.domain.enum_api.controller.response.EnumDto;
 import young.blaybus.domain.enum_api.controller.response.EnumResponse;
 import young.blaybus.util.enums.CareStyle;
@@ -27,6 +28,7 @@ public class EnumService {
       Stream.of(DayOfWeek.values())
         .map(value -> EnumDto.builder()
           .code(value.name())
+          .value(value.name())
           .build()
         )
         .toList();
@@ -123,6 +125,24 @@ public class EnumService {
 
     return EnumResponse.builder()
       .enumList(careStyleList)
+      .build();
+  }
+
+  /**
+   * 자격증 유형 목록 조회
+   */
+  public EnumResponse getCertificateTypeList() {
+    List<EnumDto> certificateTypeList =
+      Stream.of(CertificateType.values())
+        .map(value -> EnumDto.builder()
+          .code(value.name())
+          .value(value.getValue())
+          .build()
+        )
+        .toList();
+
+    return EnumResponse.builder()
+      .enumList(certificateTypeList)
       .build();
   }
 }

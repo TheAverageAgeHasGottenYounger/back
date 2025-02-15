@@ -54,6 +54,12 @@ public class EnumController {
     return ApiResponse.onSuccess(enumService.getCareStyleList());
   }
 
+  @GetMapping("/certificate-type")
+  @Operation(summary = "자격증 유형 목록 조회")
+  public ApiResponse<EnumResponse> getCertificateTypeList() {
+    return ApiResponse.onSuccess(enumService.getCertificateTypeList());
+  }
+
 
 
 }
