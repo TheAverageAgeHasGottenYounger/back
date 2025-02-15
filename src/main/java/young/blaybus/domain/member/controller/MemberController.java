@@ -11,7 +11,7 @@ import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.center.service.CenterService;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
 import young.blaybus.domain.member.controller.request.CreateMemberRequest;
-import young.blaybus.domain.member.security.SecurityUtils;
+import young.blaybus.domain.member.controller.response.GetMember;
 import young.blaybus.domain.member.service.MemberService;
 
 @RestController
@@ -30,7 +30,9 @@ public class MemberController {
         @RequestPart(value = "profileImageFile", required = false) MultipartFile profileImageFile,
         @RequestPart(value = "memberRequest") @Valid CreateMemberRequest memberRequest
     ) {
-        memberService.workerRegisterMember(memberRequest);
+        if (profileImageFile != null) memberService.workerRegisterMember(memberRequest, profileImageFile);
+        else memberService.workerRegisterMember(memberRequest, null);
+
         return ApiResponse.onSuccess();
     }
 
@@ -41,8 +43,16 @@ public class MemberController {
         @RequestPart(value = "profileImageFile", required = false) MultipartFile profileImageFile,
         @RequestPart(value = "adminRequest") @Valid CreateAdminRequest adminRequest
     ) {
-        memberService.adminRegisterMember(adminRequest);
+        memberService.adminRegisterMember(adminRequest, profileImageFile);
         centerService.registerCenter(adminRequest.center(), adminRequest);
+
+        if (profileImageFile != null){
+            memberService.adminRegisterMember(adminRequest, profileImageFile);
+            centerService.registerCenter(adminRequest.center(), adminRequest);
+        } else {
+            memberService.adminRegisterMember(adminRequest, null);
+            centerService.registerCenter(adminRequest.center(), adminRequest);
+        }
 
         return ApiResponse.onSuccess();
     }
@@ -52,7 +62,7 @@ public class MemberController {
     @Operation(summary = "회원 아이디 중복 체크")
     public ApiResponse<?> duplicationIdCheck(@RequestParam String memberId) {
         String duplication = memberService.duplicationIdCheck(memberId);
-        if (duplication == null) return ApiResponse.onFailure("409", "아이디가 중복됩니다.", "");
+        if (duplication == null) return ApiResponse.onFailure("409", "아이디가 중복됩니다.", null);
         return ApiResponse.onSuccess();
     }
 
@@ -60,10 +70,16 @@ public class MemberController {
     @GetMapping(value = "/duplication-name")
     @Operation(summary = "회원 이름 중복 체크")
     public ApiResponse<?> duplicationNameCheck(@RequestParam String memberName) {
-        System.out.println(SecurityUtils.getCurrentMemberName());
         String duplication = memberService.duplicationNameCheck(memberName);
-        if (duplication == null) return ApiResponse.onFailure("409", "이름이 중복됩니다.", "");
+        if (duplication == null) return ApiResponse.onFailure("409", "이름이 중복됩니다.", null);
         return ApiResponse.onSuccess();
+    }
+
+    // 회원 조회
+    @GetMapping(value = "/{member-id}")
+    @Operation(summary = "회원 조회")
+    public ApiResponse<?> getMember(@PathVariable("member-id") String memberId) {
+        return ApiResponse.onSuccess(memberService.getMember(memberId));
     }
 
     // 로그인
