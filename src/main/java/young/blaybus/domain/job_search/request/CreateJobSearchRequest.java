@@ -6,7 +6,7 @@ import young.blaybus.util.enums.DayOfWeek;
 import java.util.List;
 
 @Schema(description = "구직 정보 입력 객체")
-public record JobSearchRequest(
+public record CreateJobSearchRequest(
 
         @Schema(description = "회원 ID")
         String memberId,
