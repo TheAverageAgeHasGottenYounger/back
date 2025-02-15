@@ -8,13 +8,18 @@ import young.blaybus.domain.job_search.JobSearch;
 import young.blaybus.domain.job_search.JobSearchArea;
 import young.blaybus.domain.job_search.JobSearchDay;
 import young.blaybus.domain.job_search.repository.JobSearchRepository;
-import young.blaybus.domain.job_search.request.JobSearchRequest;
+import young.blaybus.domain.job_search.request.CreateJobSearchRequest;
+import young.blaybus.domain.job_search.request.UpdateJobSearchRequest;
+import young.blaybus.domain.job_search.response.DetailJobSearchResponse;
+import young.blaybus.domain.job_search.response.JobSearchAreaResponse;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.repository.MemberRepository;
+import young.blaybus.util.enums.DayOfWeek;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,7 +29,7 @@ public class JobSearchService {
   private final MemberRepository memberRepository;
 
   @Transactional
-  public void createJobSearch(JobSearchRequest jobSearchRequest) {
+  public void createJobSearch(CreateJobSearchRequest jobSearchRequest) {
     Member member = memberRepository.findById(jobSearchRequest.memberId())
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
@@ -38,9 +43,7 @@ public class JobSearchService {
 
     List<JobSearchArea> jobSearchAreas = jobSearchRequest.jobSearchAreas().stream()
             .map(areaRequest -> JobSearchArea.builder()
-                    .city(areaRequest.city())
-                    .guGun(areaRequest.guGun())
-                    .dong(areaRequest.dong())
+                    .address(areaRequest.address())
                     .jobSearch(jobSearch)
                     .build())
             .toList();
@@ -56,5 +59,39 @@ public class JobSearchService {
     jobSearch.getDayList().addAll(jobSearchDays);
 
     jobSearchRepository.save(jobSearch);
+  }
+
+  @Transactional
+  public void updateJobSearch(Long jobSearchId, UpdateJobSearchRequest request) {
+    JobSearch jobSearch=jobSearchRepository.findById(jobSearchId)
+            .orElseThrow(() -> new IllegalArgumentException("구직 정보가 존재하지 않습니다."));
+
+    jobSearch.updateFromDto(request);
+
+    jobSearchRepository.save(jobSearch);
+  }
+
+  @Transactional
+  public DetailJobSearchResponse getJobSearch(String memberId) {
+    JobSearch jobSearch= jobSearchRepository.findByMemberId(memberId)
+            .orElseThrow(()->new IllegalArgumentException("해당 회원의 구직 정보가 존재하지 않습니다."));
+
+    List<JobSearchAreaResponse> jobSearchAreaResponses = jobSearch.getJobSearchAreas().stream().map(jobSearchArea ->
+      JobSearchAreaResponse.builder().address(jobSearchArea.getAddress()).build()
+    ).toList();
+
+    List<String> dayList = jobSearch.getDayList().stream()
+            .map(JobSearchDay::getDay)
+            .map(DayOfWeek::toString)
+            .collect(Collectors.toList());
+
+    return DetailJobSearchResponse.builder()
+            .jobSearchId(jobSearch.getId())
+            .startTime(jobSearch.getStartTime().toString())
+            .endTime(jobSearch.getEndTime().toString())
+            .salary(jobSearch.getSalary())
+            .jobSearchAreas(jobSearchAreaResponses)
+            .dayList(dayList)
+            .build();
   }
 }
