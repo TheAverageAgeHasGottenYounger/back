@@ -16,6 +16,6 @@ import java.util.List;
 @Schema(description = "요양보호사 매칭 현황 조회 객체")
 public class GetMatchingWorkerList {
 
-    @Schema(description = "요양보호사")
+    @Schema(description = "요양보호사 리스트")
     private List<GetMember> memberList;
 }

@@ -15,6 +15,6 @@ import java.util.List;
 @Schema(description = "어르신 매칭 현황 조회 객체")
 public class GetMatchingSeniorList {
 
-    @Schema(description = "어르신")
+    @Schema(description = "어르신 리스트")
     private List<GetSenior> seniorList;
 }

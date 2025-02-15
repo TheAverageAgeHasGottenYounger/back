@@ -18,7 +18,6 @@ import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.controller.response.GetMember;
 import young.blaybus.domain.member.repository.MemberRepository;
 import young.blaybus.domain.senior.Senior;
-import young.blaybus.domain.senior.controller.response.DetailSeniorResponse;
 import young.blaybus.domain.senior.repository.SeniorRepository;
 
 import java.util.ArrayList;
@@ -44,10 +43,6 @@ public class MatchingService {
                 .member(member)
                 .status(MatchingStatus.PENDING)
                 .build();
-
-        System.out.println("요청할 어르신 ID: " + matching.getSenior().getId());
-        System.out.println("요청 받을 요양보호사 ID: " + matching.getMember().getId());
-        System.out.println("매칭 상태: " + matching.getStatus());
 
         matchingRepository.save(matching);
     }
@@ -99,9 +94,9 @@ public class MatchingService {
     public GetMatchingSeniorList getMatchingSeniorList(String workerId) {
         List<Matching> matching = matchingRepository.findByMember_Id(workerId);
 
-        List<GetSenior> list = new ArrayList<>();
+        List<GetSenior> responseList = new ArrayList<>();
         matching.forEach(m -> {
-            list.add(GetSenior.builder()
+            responseList.add(GetSenior.builder()
                 .seniorId(m.getSenior().getId())
                 .profileUrl(m.getSenior().getProfileUrl())
                 .name(m.getSenior().getName())
@@ -110,7 +105,7 @@ public class MatchingService {
         });
 
         return GetMatchingSeniorList.builder()
-                .seniorList(list)
+                .seniorList(responseList)
                 .build();
     }
 
@@ -119,7 +114,7 @@ public class MatchingService {
     public GetMatchingWorkerList getMatchingWorkerList(String seniorId) {
         List<Matching> matching = matchingRepository.findBySenior_Id(Long.parseLong(seniorId));
 
-        List<GetMember> list = new ArrayList<>();
+        List<GetMember> responseList = new ArrayList<>();
         matching.forEach(m -> {
             List<Certificate> certificate =  certificateRepository.findByMember(m.getMember()).orElse(null);
             List<CreateCertificateRequest> certificates = new ArrayList<>();
@@ -129,7 +124,7 @@ public class MatchingService {
                 });
             }
 
-            list.add(
+            responseList.add(
                 GetMember.builder()
                     .id(m.getMember().getId())
                     .name(m.getMember().getName())
@@ -148,11 +143,11 @@ public class MatchingService {
         });
 
         return GetMatchingWorkerList.builder()
-                .memberList(list)
+                .memberList(responseList)
                 .build();
     }
 
-    // 매칭 상태 수정
+    // 매칭 상태 갱신
     @Transactional(rollbackOn = Exception.class)
     public void matchingStatusPatch(PatchStatusRequest statusRequest) {
         Matching matching = matchingRepository.findBySenior_IdAndMember_Id(Long.parseLong(statusRequest.seniorId()), statusRequest.workerId());
