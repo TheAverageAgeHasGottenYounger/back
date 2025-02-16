@@ -16,10 +16,11 @@ public class CorsConfig implements WebMvcConfigurer {
         "https://www.ondue.store",
         "https://api.ondue.store",
         "http://localhost:3000"
-      ) // 특정 Origin만 허용
+      )
       .allowedMethods("*")
       .allowedHeaders("*")
       .allowCredentials(true)
+      .exposedHeaders("Authorization")
       .maxAge(3600);
   }
 }

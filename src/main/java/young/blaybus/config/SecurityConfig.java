@@ -1,5 +1,6 @@
 package young.blaybus.config;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import young.blaybus.domain.member.security.filter.JwtAuthenticationFilter;
 import young.blaybus.domain.member.security.filter.LoginAuthenticationFilter;
 import young.blaybus.domain.member.security.jwt.provider.JwtProvider;
@@ -33,11 +37,13 @@ public class SecurityConfig {
     http.formLogin(AbstractHttpConfigurer::disable);
     http.httpBasic(AbstractHttpConfigurer::disable);
     http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+    http.headers(AbstractHttpConfigurer::disable);
 
     http.authorizeHttpRequests(auth -> auth
       .requestMatchers(
         "/", "member/admin-join", "/member/worker-join",
-        "/member/duplication-id", "/member/duplication-name", "/member/login",
+        "/member/duplication-id", "/member/duplication-name", "/member/login", "/member/login/v2",
         "/health", "/center/is-registration", "/s3", "/enum/**"
       ).permitAll().requestMatchers( // Swagger 관련 Url 요청 처리
         "/swagger-ui/**",
@@ -63,4 +69,20 @@ public class SecurityConfig {
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();
   }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("https://www.ondue.store", "https://api.ondue.store", "http://localhost:3000"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true);
+    config.addExposedHeader("Authorization");
+    config.setMaxAge(3600L);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+  }
+
 }
