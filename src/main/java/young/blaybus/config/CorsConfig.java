@@ -12,7 +12,11 @@ public class CorsConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
-      .allowedOriginPatterns("*")
+      .allowedOrigins(
+        "https://www.ondue.store",
+        "https://api.ondue.store",
+        "http://localhost:3000"
+      ) // 특정 Origin만 허용
       .allowedMethods("*")
       .allowedHeaders("*")
       .allowCredentials(true)
