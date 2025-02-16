@@ -20,6 +20,7 @@ import young.blaybus.domain.member.repository.MemberRepository;
 import young.blaybus.domain.senior.Senior;
 import young.blaybus.domain.senior.repository.SeniorRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class MatchingService {
                 .senior(senior)
                 .member(member)
                 .status(MatchingStatus.PENDING)
+                .createdTime(LocalDateTime.now())
                 .build();
 
         matchingRepository.save(matching);

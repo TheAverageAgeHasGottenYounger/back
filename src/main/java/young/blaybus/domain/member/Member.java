@@ -27,6 +27,7 @@ import young.blaybus.domain.member.enums.MemberRole;
 public class Member {
 
   @Id
+  @Column(name = "member_id")
   private String id;
 
   @Comment("비밀번호")
