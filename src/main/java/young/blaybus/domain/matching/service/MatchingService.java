@@ -60,6 +60,7 @@ public class MatchingService {
     public GetMatchingStatisticsDto getMatching() {
         String workerId = SecurityUtils.getCurrentMemberName();
         Member member = memberRepository.findById(workerId).orElse(null);
+
         if (member != null) {
             List<Matching> matching = matchingRepository.findByMember_Id(member.getId());
 
