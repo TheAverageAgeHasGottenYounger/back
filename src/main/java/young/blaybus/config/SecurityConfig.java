@@ -78,11 +78,11 @@ public class SecurityConfig {
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true);
     config.addExposedHeader("Authorization");
-    config.setExposedHeaders(List.of("Authorization"));
     config.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", config);
     return source;
   }
+
 }
