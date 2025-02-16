@@ -12,12 +12,10 @@ public class CorsConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
-      .allowedOrigins(
-        "https://www.ondue.store",
-        "https://api.ondue.store",
-        "http://localhost:3000"
-      )
+      .allowedOriginPatterns("*")
       .allowedMethods("*")
+      .allowedHeaders("*")
+      .allowCredentials(true)
       .maxAge(3600);
   }
 }
