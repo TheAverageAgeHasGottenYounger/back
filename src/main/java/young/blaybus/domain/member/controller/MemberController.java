@@ -88,4 +88,11 @@ public class MemberController {
         return ApiResponse.onSuccess();
     }
 
+    // 로그인
+    @PostMapping(value = "/login/v2")
+    @Operation(summary = "로그인 V2")
+    public ApiResponse<?> loginV2(@RequestParam String id, @RequestParam String password) {
+        return ApiResponse.onSuccess(memberService.login(id, password));
+    }
+
 }
