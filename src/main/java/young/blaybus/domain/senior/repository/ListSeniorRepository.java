@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import young.blaybus.domain.center.Center;
 import young.blaybus.domain.senior.controller.response.ListSeniorDto;
 
 @Repository
@@ -15,7 +16,7 @@ public class ListSeniorRepository {
 
   private final JPAQueryFactory queryFactory;
 
-  public List<ListSeniorDto> getSeniorList(Long centerId) {
+  public List<ListSeniorDto> getSeniorList(Center center) {
     return queryFactory.select(
         Projections.fields(
           ListSeniorDto.class,
@@ -28,7 +29,7 @@ public class ListSeniorRepository {
           )
       )
       .from(senior)
-      .where(senior.center.id.eq(centerId))
+      .where(senior.center.eq(center))
       .fetch();
   }
 }

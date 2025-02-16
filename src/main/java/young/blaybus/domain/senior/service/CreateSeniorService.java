@@ -7,6 +7,9 @@ import young.blaybus.api_response.exception.GeneralException;
 import young.blaybus.api_response.status.ErrorStatus;
 import young.blaybus.domain.job_seek.JobSeek;
 import young.blaybus.domain.job_seek.repository.JobSeekRepository;
+import young.blaybus.domain.member.Member;
+import young.blaybus.domain.member.repository.MemberRepository;
+import young.blaybus.domain.member.security.SecurityUtils;
 import young.blaybus.domain.senior.Senior;
 import young.blaybus.domain.senior.SeniorDay;
 import young.blaybus.domain.senior.SeniorFoodAssist;
@@ -24,10 +27,14 @@ public class CreateSeniorService {
 
   private final SeniorRepository seniorRepository;
   private final JobSeekRepository jobSeekRepository;
+  private final MemberRepository memberRepository;
 
   public void createSenior(CreateSeniorRequest request) {
 
-    // todo SecurityUtil 설정 후 center 저장
+    String currentMemberId = SecurityUtils.getCurrentMemberName();
+    Member member = memberRepository.findById(currentMemberId)
+      .orElseThrow(() -> new GeneralException(ErrorStatus.UNAUTHORIZED));
+    
     Senior senior = Senior.builder()
       .name(request.name())
       .birthday(request.birthday())
@@ -37,7 +44,7 @@ public class CreateSeniorService {
       .startTime(request.startTime())
       .endTime(request.endTime())
       .careStyle(request.careStyle())
-//        .center()
+      .center(member.getCenter())
       .build();
 
     seniorRepository.save(senior);

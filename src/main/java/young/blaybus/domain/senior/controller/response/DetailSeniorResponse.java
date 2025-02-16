@@ -33,7 +33,6 @@ public class DetailSeniorResponse {
 
   private LocalDate birthday;
 
-  // todo 나중에 Address 객체로 변경
   private String address;
 
   @Setter

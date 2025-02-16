@@ -14,7 +14,7 @@ public class CorsConfig implements WebMvcConfigurer {
     registry.addMapping("/**")
       .allowedOrigins(
         "https://www.ondue.store",
-        "https://api.ondue.com",
+        "https://api.ondue.store",
         "http://localhost:3000"
       )
       .allowedMethods("*")
