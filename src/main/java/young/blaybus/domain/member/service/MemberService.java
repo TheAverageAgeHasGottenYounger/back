@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import young.blaybus.api_response.exception.GeneralException;
+import young.blaybus.api_response.status.ErrorStatus;
 import young.blaybus.domain.address.Address;
 import young.blaybus.domain.center.Center;
 import young.blaybus.domain.center.repository.CenterRepository;
@@ -22,6 +24,7 @@ import young.blaybus.domain.member.controller.response.GetCenterCheckResponse;
 import young.blaybus.domain.member.controller.response.GetMember;
 import young.blaybus.domain.member.enums.MemberRole;
 import young.blaybus.domain.member.repository.MemberRepository;
+import young.blaybus.domain.member.security.jwt.provider.JwtProvider;
 import young.blaybus.domain.s3_file.service.S3FileService;
 
 import java.time.LocalDateTime;
@@ -37,8 +40,9 @@ public class MemberService {
     private final CenterRepository centerRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final S3FileService s3FileService;
+  private final JwtProvider jwtProvider;
 
-    // 관리자 회원 등록
+  // 관리자 회원 등록
     @Transactional(rollbackOn = Exception.class)
     public void adminRegisterMember(CreateAdminRequest adminRequest, MultipartFile profileImage) {
         LocalDateTime now = LocalDateTime.now();
@@ -137,8 +141,8 @@ public class MemberService {
         Optional<List<Certificate>> certificate = certificateRepository.findByMember(member);
 
         List<CreateCertificateRequest> getCertificate = new ArrayList<>();
-        GetMember getMember = null;
-        GetAdmin getAdmin = null;
+        GetMember getMember;
+        GetAdmin getAdmin;
         if (member != null) {
             if (certificate.isPresent() && member.getRole() == MemberRole.WORKER) {
                 certificate.get().forEach(c -> {
@@ -189,4 +193,12 @@ public class MemberService {
         return null;
     }
 
+    public String login(String id, String password) {
+        Optional<Member> optionalMember = memberRepository.findById(id);
+        if (optionalMember.isEmpty() || bCryptPasswordEncoder.matches(password, optionalMember.get().getPassword())) {
+          throw new GeneralException(ErrorStatus.BAD_REQUEST, "아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
+
+        return jwtProvider.createAccessToken(id, String.valueOf(optionalMember.get().getRole()));
+    }
 }
