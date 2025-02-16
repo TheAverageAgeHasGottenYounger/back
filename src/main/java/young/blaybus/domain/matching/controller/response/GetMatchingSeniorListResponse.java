@@ -16,6 +16,9 @@ import java.util.List;
 @Schema(description = "매칭 요청 목록 조회 응답 객체")
 public class GetMatchingSeniorListResponse {
 
+    @Schema(description = "어르신 ID")
+    private String seniorId;
+
     @Schema(description = "프로필 사진")
     private String profileUrl;
 

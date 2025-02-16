@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @Schema(description = "매칭 현황 (건수) 응답 객체")
-public class GetMatchingStatisticsDto {
+public class GetMatchingStatistics {
 
     @Schema(description = "전체 매칭")
     private int fullMatching;

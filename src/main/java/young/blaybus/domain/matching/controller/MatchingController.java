@@ -37,7 +37,7 @@ public class MatchingController {
     @ApiResponses(value = {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
-            content = @Content(schema = @Schema(implementation = GetMatchingStatisticsDto.class))
+            content = @Content(schema = @Schema(implementation = GetMatchingStatistics.class))
         )
     })
     public ApiResponse<?> get() {

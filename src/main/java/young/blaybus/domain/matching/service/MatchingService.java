@@ -17,7 +17,6 @@ import young.blaybus.domain.member.repository.MemberRepository;
 import young.blaybus.domain.member.security.SecurityUtils;
 import young.blaybus.domain.senior.Senior;
 import young.blaybus.domain.senior.repository.SeniorRepository;
-import young.blaybus.domain.senior.service.ListSeniorService;
 import young.blaybus.util.enums.DayOfWeek;
 
 import java.time.LocalDateTime;
@@ -25,9 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +34,6 @@ public class MatchingService {
     private final SeniorRepository seniorRepository;
     private final MatchingRepository matchingRepository;
     private final CertificateRepository certificateRepository;
-    private final ListSeniorService listSeniorService;
 
     // 매칭 요청
     @Transactional(rollbackOn = Exception.class)
@@ -57,10 +53,9 @@ public class MatchingService {
 
     // 매칭 현황 조회 (특정)
     @Transactional(rollbackOn = Exception.class)
-    public GetMatchingStatisticsDto getMatching() {
+    public GetMatchingStatistics getMatching() {
         String workerId = SecurityUtils.getCurrentMemberName();
         Member member = memberRepository.findById(workerId).orElse(null);
-
         if (member != null) {
             List<Matching> matching = matchingRepository.findByMember_Id(member.getId());
 
@@ -78,7 +73,7 @@ public class MatchingService {
                 fullMatchingCount.getAndIncrement();
             });
 
-            return GetMatchingStatisticsDto.builder()
+            return GetMatchingStatistics.builder()
                     .fullMatching(fullMatchingCount.get())
                     .acceptance(acceptance.get())
                     .refusal(refusal.get())
@@ -104,6 +99,7 @@ public class MatchingService {
 
             responseList.add(
                 GetMatchingSeniorListResponse.builder()
+                    .seniorId(String.valueOf(m.getSenior().getId()))
                     .profileUrl(m.getSenior().getProfileUrl())
                     .seniorName(m.getSenior().getName())
                     .address(m.getSenior().getAddress())
@@ -157,7 +153,7 @@ public class MatchingService {
                 .build();
     }
 
-    // 매칭 상태 갱신
+    // 매칭 상태 수정
     @Transactional(rollbackOn = Exception.class)
     public void matchingStatusPatch(PatchStatusRequest statusRequest) {
         Matching matching = matchingRepository.findBySenior_IdAndMember_Id(Long.parseLong(statusRequest.seniorId()), statusRequest.workerId());
