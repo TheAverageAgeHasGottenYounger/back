@@ -195,7 +195,7 @@ public class MemberService {
 
     public String login(String id, String password) {
         Optional<Member> optionalMember = memberRepository.findById(id);
-        if (optionalMember.isEmpty() || bCryptPasswordEncoder.matches(password, optionalMember.get().getPassword())) {
+        if (optionalMember.isEmpty() || !bCryptPasswordEncoder.matches(password, optionalMember.get().getPassword())) {
           throw new GeneralException(ErrorStatus.BAD_REQUEST, "아이디 또는 비밀번호가 일치하지 않습니다.");
         }
 
