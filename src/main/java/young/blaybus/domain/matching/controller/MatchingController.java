@@ -72,9 +72,9 @@ public class MatchingController {
         return ApiResponse.onSuccess(matchingService.getMatchingWorkerList(seniorId));
     }
 
-    // 수락/거절/조율요청에 따라 Matching 테이블 내 status 컬럼 갱신
+    // 수락/거절/조율요청에 따라 Matching 테이블 내 status 컬럼 수정
     @PatchMapping(value = "/status/update")
-    @Operation(summary = "매칭 상태 갱신")
+    @Operation(summary = "매칭 상태 수정")
     public ApiResponse<?> update(@RequestBody PatchStatusRequest statusRequest) {
         matchingService.matchingStatusPatch(statusRequest);
         return ApiResponse.onSuccess();
