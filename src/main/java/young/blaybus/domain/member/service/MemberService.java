@@ -56,7 +56,6 @@ public class MemberService {
                 .id(adminRequest.id())
                 .password(bCryptPasswordEncoder.encode(adminRequest.password()))
                 .phoneNumber(adminRequest.phoneNumber())
-                .address(new Address(adminRequest.city(), adminRequest.gu(), adminRequest.dong(), null))
                 .carYn(adminRequest.carYn())
                 .profileUrl(profileUrl)
                 .role(role)
@@ -174,9 +173,6 @@ public class MemberService {
                     getAdmin = GetAdmin.builder()
                             .id(member.getId())
                             .profileUrl(member.getProfileUrl())
-                            .city(member.getAddress().getCity())
-                            .gu(member.getAddress().getDistrict())
-                            .dong(member.getAddress().getDong())
                             .carYn(member.getCarYn())
                             .phoneNumber(member.getPhoneNumber())
                             .center(
