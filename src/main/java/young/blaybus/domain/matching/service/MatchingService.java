@@ -114,49 +114,11 @@ public class MatchingService {
         return responseList;
     }
 
-    // 매칭 현황 요양보호사 리스트 조회 -> 관리자 쪽에서 요양보호사 매칭 현황 조회
-    @Transactional(rollbackOn = Exception.class)
-    public GetMatchingWorkerList getMatchingWorkerList(String seniorId) {
-        List<Matching> matching = matchingRepository.findBySenior_Id(Long.parseLong(seniorId));
-
-        List<GetMember> responseList = new ArrayList<>();
-        matching.forEach(m -> {
-            List<Certificate> certificate =  certificateRepository.findByMember(m.getMember()).orElse(null);
-            List<CreateCertificateRequest> certificates = new ArrayList<>();
-            if (certificate != null) {
-                certificate.forEach(c -> {
-                    certificates.add(new CreateCertificateRequest(c.getType().getValue(), c.getNumber(), c.getGrade().getValue()));
-                });
-            }
-
-            responseList.add(
-                GetMember.builder()
-                    .id(m.getMember().getId())
-                    .name(m.getMember().getName())
-                    .phoneNumber(m.getMember().getPhoneNumber())
-                    .city(m.getMember().getAddress().getCity())
-                    .gu(m.getMember().getAddress().getDistrict())
-                    .dong(m.getMember().getAddress().getDong())
-                    .certificate(certificates)
-                    .carYn(m.getMember().getCarYn())
-                    .dementiaEducationYn(m.getMember().getDementiaEducationYn())
-                    .career(m.getMember().getCareer())
-                    .careerPeriod(m.getMember().getCareerPeriod())
-                    .introduction(m.getMember().getIntroduction())
-                    .profileUrl(m.getMember().getProfileUrl())
-                    .build()
-            );
-        });
-
-        return GetMatchingWorkerList.builder()
-                .memberList(responseList)
-                .build();
-    }
-
     // 매칭 상태 수정
     @Transactional(rollbackOn = Exception.class)
     public void matchingStatusPatch(PatchStatusRequest statusRequest) {
-        Matching matching = matchingRepository.findBySenior_IdAndMember_Id(Long.parseLong(statusRequest.seniorId()), statusRequest.workerId());
+        String workerId = SecurityUtils.getCurrentMemberName();
+        Matching matching = matchingRepository.findBySenior_IdAndMember_Id(Long.parseLong(statusRequest.seniorId()), workerId);
 
         Matching matchingUpdateObject = Matching.builder()
                 .id(matching.getId())

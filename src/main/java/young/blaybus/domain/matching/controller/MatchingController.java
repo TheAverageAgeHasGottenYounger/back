@@ -31,6 +31,7 @@ public class MatchingController {
         return ApiResponse.onSuccess();
     }
 
+    // 매칭 현황 조회
     @GetMapping(value = "/statistics")
     @Operation(summary = "매칭 현황 조회")
     @ApiResponses(value = {
@@ -42,7 +43,6 @@ public class MatchingController {
     public ApiResponse<?> get() {
         return ApiResponse.onSuccess(matchingService.getMatching());
     }
-    // 매칭 현황 조회
 
     // 관리자 쪽에서 요양보호사 매칭 현황 조회
     @GetMapping(value = "/request/senior/list")
@@ -55,19 +55,6 @@ public class MatchingController {
     })
     public ApiResponse<?> getMatchingSeniorList() {
         return ApiResponse.onSuccess(matchingService.getMatchingSeniorList());
-    }
-
-    // 요양보호사 쪽에서 어르신 매칭 현황 조회
-    @GetMapping(value = "/list/worker/{senior-id}")
-    @Operation(summary = "매칭 현황 요양보호사 리스트 조회")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "200",
-                    content = @Content(schema = @Schema(implementation = GetMatchingWorkerList.class))
-            )
-    })
-    public ApiResponse<?> getMatchingWorkerList(@PathVariable("senior-id") String seniorId) {
-        return ApiResponse.onSuccess(matchingService.getMatchingWorkerList(seniorId));
     }
 
     // 수락/거절/조율요청에 따라 Matching 테이블 내 status 컬럼 수정
