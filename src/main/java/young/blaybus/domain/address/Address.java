@@ -3,11 +3,11 @@ package young.blaybus.domain.address;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.springframework.util.StringUtils;
 
 @Embeddable
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address {
@@ -25,4 +25,11 @@ public class Address {
     @Comment("상세 주소")
     private String detail;
 
+    @Override
+    public String toString() {
+        String str = city + " " + district + " " + dong;
+        if (StringUtils.hasText(detail))  str += " " + detail;
+
+        return str;
+    }
 }

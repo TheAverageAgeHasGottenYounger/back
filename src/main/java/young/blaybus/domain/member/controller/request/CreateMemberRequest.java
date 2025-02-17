@@ -51,6 +51,6 @@ public record CreateMemberRequest(
     @Schema(description = "한줄 소개")
     String introduction,
 
-    @Schema(description = "요양 스타일")
+    @Schema(description = "돌봄 스타일")
     CareStyle careStyle
 ) { }

@@ -14,7 +14,9 @@ import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.senior.controller.request.CreateSeniorRequest;
 import young.blaybus.domain.senior.controller.request.UpdateSeniorRequest;
 import young.blaybus.domain.senior.controller.response.DetailSeniorResponse;
+import young.blaybus.domain.senior.controller.response.ListRecommendResponse;
 import young.blaybus.domain.senior.controller.response.ListSeniorResponse;
+import young.blaybus.domain.senior.service.RecommendService;
 import young.blaybus.domain.senior.service.SeniorService;
 
 @RestController
@@ -24,6 +26,7 @@ import young.blaybus.domain.senior.service.SeniorService;
 public class SeniorController {
 
   private final SeniorService seniorService;
+  private final RecommendService recommendService;
 
   @GetMapping
   @Operation(summary = "어르신 목록 조회")
@@ -56,6 +59,14 @@ public class SeniorController {
   ) {
     seniorService.updateSenior(seniorId, request);
     return ApiResponse.onSuccess();
+  }
+
+  @GetMapping("/{senior-id}/recommend")
+  @Operation(summary = "요양 보호사 추천 받기")
+  public ApiResponse<ListRecommendResponse> getRecommendList(
+    @PathVariable("senior-id") Long seniorId
+  ) {
+    return ApiResponse.onSuccess(recommendService.getRecommendList(seniorId));
   }
 
 }

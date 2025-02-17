@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 import young.blaybus.api_response.exception.GeneralException;
 import young.blaybus.api_response.status.ErrorStatus;
 import young.blaybus.domain.address.Address;
@@ -26,7 +25,6 @@ import young.blaybus.domain.member.controller.response.GetMember;
 import young.blaybus.domain.member.enums.MemberRole;
 import young.blaybus.domain.member.repository.MemberRepository;
 import young.blaybus.domain.member.security.jwt.provider.JwtProvider;
-import young.blaybus.domain.s3_file.service.S3FileService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -89,7 +87,7 @@ public class MemberService {
                 .introduction(memberRequest.introduction())
                 .careerPeriod(memberRequest.careerPeriod())
                 .createdTime(now)
-                .style(memberRequest.careStyle().getValue())
+                .careStyle(memberRequest.careStyle())
                 .build();
 
         memberRepository.save(member);
@@ -162,7 +160,7 @@ public class MemberService {
                         .dong(member.getAddress().getDong())
                         .certificate(getCertificate)
                         .profileUrl(member.getProfileUrl())
-                        .style(member.getStyle())
+                        .style(member.getCareStyle().getValue())
                         .build();
 
                 return getMember;
