@@ -20,15 +20,6 @@ public class GetAdmin {
     @Schema(description = "전화번호")
     String phoneNumber;
 
-    @Schema(description = "시/도")
-    String city;
-
-    @Schema(description = "구/군")
-    String gu;
-
-    @Schema(description = "동")
-    String dong;
-
     @Schema(description = "차량 소유 여부")
     Boolean carYn;
 
