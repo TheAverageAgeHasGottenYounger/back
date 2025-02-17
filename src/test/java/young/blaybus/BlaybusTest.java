@@ -26,8 +26,8 @@ public class BlaybusTest {
 
   @Test
   void geocodingTest() {
-    Coordinate response1 = mapService.geocoding("서울시", "강남구", "역삼동");
-    Coordinate response2 = mapService.geocoding("부산시", "해운대", "센텀");
+    Coordinate response1 = mapService.geocoding("서울시"+" 강남구"+" 역삼동");
+    Coordinate response2 = mapService.geocoding("부산시"+" 해운대"+" 센텀");
 //      Coordinate response3 = mapService.geocoding("대전시", "유성구", "어은동");
 //      Coordinate response4 = mapService.geocoding("인천", "남동", "구월");
 //      Coordinate response5 = mapService.geocoding("대구시", "동구", "신천동");
