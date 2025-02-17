@@ -2,16 +2,14 @@ package young.blaybus.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.center.service.CenterService;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
 import young.blaybus.domain.member.controller.request.CreateMemberRequest;
+import young.blaybus.domain.member.controller.response.CurrentMemberResponse;
 import young.blaybus.domain.member.service.MemberService;
 
 @RestController
@@ -77,6 +75,12 @@ public class MemberController {
     @Operation(summary = "로그인 V2")
     public ApiResponse<?> loginV2(@RequestParam String id, @RequestParam String password) {
         return ApiResponse.onSuccess(memberService.login(id, password));
+    }
+
+    @GetMapping("/current")
+    @Operation(summary = "현재 로그인 회원 정보 조회")
+    public ApiResponse<CurrentMemberResponse> getCurrentMember() {
+        return ApiResponse.onSuccess(memberService.getCurrentMember());
     }
 
 }
