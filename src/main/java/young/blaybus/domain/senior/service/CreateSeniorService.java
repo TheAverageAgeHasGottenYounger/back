@@ -3,6 +3,7 @@ package young.blaybus.domain.senior.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import young.blaybus.api_response.exception.GeneralException;
 import young.blaybus.api_response.status.ErrorStatus;
 import young.blaybus.domain.job_seek.JobSeek;
@@ -34,13 +35,17 @@ public class CreateSeniorService {
     String currentMemberId = SecurityUtils.getCurrentMemberName();
     Member member = memberRepository.findById(currentMemberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.UNAUTHORIZED));
-    
+
+    String profileUrl = null;
+    boolean isProfileUrl = StringUtils.hasText(request.profileUrl());
+    if (isProfileUrl) profileUrl = request.profileUrl();
+
     Senior senior = Senior.builder()
       .name(request.name())
       .birthday(request.birthday())
       .sex(request.sex())
       .address(request.address())
-      .profileUrl(request.profileUrl())
+      .profileUrl(profileUrl)
       .startTime(request.startTime())
       .endTime(request.endTime())
       .careStyle(request.careStyle())
@@ -54,12 +59,16 @@ public class CreateSeniorService {
     Senior senior = seniorRepository.findById(seniorId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "존재하지 않는 어르신 ID입니다."));
 
+    String profileUrl = senior.getProfileUrl();
+    boolean isProfileUrl = StringUtils.hasText(request.profileUrl());
+    if (isProfileUrl) profileUrl = request.profileUrl();
+
     senior.toBuilder()
       .name(request.name())
       .birthday(request.birthday())
       .sex(request.sex())
       .address(request.address())
-      .profileUrl(request.profileUrl())
+      .profileUrl(profileUrl)
       .startTime(request.startTime())
       .endTime(request.endTime())
       .careStyle(request.careStyle())
