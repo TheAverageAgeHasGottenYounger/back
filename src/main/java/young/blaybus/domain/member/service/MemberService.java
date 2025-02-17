@@ -19,11 +19,13 @@ import young.blaybus.domain.certificate.request.CreateCertificateRequest;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
 import young.blaybus.domain.member.controller.request.CreateMemberRequest;
+import young.blaybus.domain.member.controller.response.CurrentMemberResponse;
 import young.blaybus.domain.member.controller.response.GetAdmin;
 import young.blaybus.domain.member.controller.response.GetCenterCheckResponse;
 import young.blaybus.domain.member.controller.response.GetMember;
 import young.blaybus.domain.member.enums.MemberRole;
 import young.blaybus.domain.member.repository.MemberRepository;
+import young.blaybus.domain.member.security.SecurityUtils;
 import young.blaybus.domain.member.security.jwt.provider.JwtProvider;
 
 import java.time.LocalDateTime;
@@ -201,5 +203,14 @@ public class MemberService {
         }
 
         return jwtProvider.createAccessToken(id, String.valueOf(optionalMember.get().getRole()));
+    }
+
+    public CurrentMemberResponse getCurrentMember() {
+        Member member = memberRepository.findById(SecurityUtils.getCurrentMemberName())
+          .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST));
+        return CurrentMemberResponse.builder()
+          .memberId(member.getId())
+          .role(member.getRole())
+          .build();
     }
 }
