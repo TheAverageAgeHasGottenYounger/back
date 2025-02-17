@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.center.service.CenterService;
+import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
 import young.blaybus.domain.member.controller.request.CreateMemberRequest;
 import young.blaybus.domain.member.service.MemberService;
@@ -23,36 +24,19 @@ public class MemberController {
     private final CenterService centerService;
 
     // 요양보호사 회원가입
-    @PostMapping(value = "/worker-join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/worker-join")
     @Operation(summary = "요양보호사 회원가입")
-    public ApiResponse<?> workerJoin(
-        @RequestPart(value = "profileImageFile", required = false) MultipartFile profileImageFile,
-        @RequestPart(value = "memberRequest") @Valid CreateMemberRequest memberRequest
-    ) {
-        if (profileImageFile != null) memberService.workerRegisterMember(memberRequest, profileImageFile);
-        else memberService.workerRegisterMember(memberRequest, null);
-
+    public ApiResponse<?> workerJoin(@RequestBody CreateMemberRequest memberRequest) {
+        memberService.workerRegisterMember(memberRequest);
         return ApiResponse.onSuccess();
     }
 
     // 관리자 회원가입
-    @PostMapping(value = "/admin-join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/admin-join")
     @Operation(summary = "관리자 회원가입")
-    public ApiResponse<?> adminJoin(
-        @RequestPart(value = "profileImageFile", required = false) MultipartFile profileImageFile,
-        @RequestPart(value = "adminRequest") @Valid CreateAdminRequest adminRequest
-    ) {
-        memberService.adminRegisterMember(adminRequest, profileImageFile);
-        centerService.registerCenter(adminRequest.center(), adminRequest);
-
-        if (profileImageFile != null){
-            memberService.adminRegisterMember(adminRequest, profileImageFile);
-            centerService.registerCenter(adminRequest.center(), adminRequest);
-        } else {
-            memberService.adminRegisterMember(adminRequest, null);
-            centerService.registerCenter(adminRequest.center(), adminRequest);
-        }
-
+    public ApiResponse<?> adminJoin(@RequestBody CreateAdminRequest adminRequest) {
+        Member member = memberService.adminRegisterMember(adminRequest);
+        centerService.registerCenterDetailInfor(member, adminRequest);
         return ApiResponse.onSuccess();
     }
 

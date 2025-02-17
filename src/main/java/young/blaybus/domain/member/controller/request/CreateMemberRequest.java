@@ -2,11 +2,15 @@ package young.blaybus.domain.member.controller.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import young.blaybus.domain.certificate.request.CreateCertificateRequest;
+import young.blaybus.util.enums.CareStyle;
 
 import java.util.List;
 
 @Schema(description = "요양보호사 회원가입 요청 객체")
 public record CreateMemberRequest(
+
+    @Schema(description = "프로필 사진")
+    String profileUrl,
 
     @Schema(description = "이름")
     String name,
@@ -45,5 +49,8 @@ public record CreateMemberRequest(
     String careerPeriod,
 
     @Schema(description = "한줄 소개")
-    String introduction
+    String introduction,
+
+    @Schema(description = "요양 스타일")
+    CareStyle careStyle
 ) { }

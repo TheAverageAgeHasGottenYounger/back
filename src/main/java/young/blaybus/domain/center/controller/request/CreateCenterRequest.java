@@ -4,6 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "센터 등록 요청 객체")
 public record CreateCenterRequest(
+
+    @Schema(description = "센터 ID")
+    String id,
+
     @Schema(description = "이름")
     String name,
 

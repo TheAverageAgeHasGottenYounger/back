@@ -31,18 +31,18 @@ public class MatchingController {
         return ApiResponse.onSuccess();
     }
 
-    // 매칭 현황 조회
     @GetMapping(value = "/statistics")
     @Operation(summary = "매칭 현황 조회")
     @ApiResponses(value = {
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(
-            responseCode = "200",
-            content = @Content(schema = @Schema(implementation = GetMatchingStatistics.class))
-        )
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    content = @Content(schema = @Schema(implementation = GetMatchingStatistics.class))
+            )
     })
     public ApiResponse<?> get() {
         return ApiResponse.onSuccess(matchingService.getMatching());
     }
+    // 매칭 현황 조회
 
     // 관리자 쪽에서 요양보호사 매칭 현황 조회
     @GetMapping(value = "/request/senior/list")
