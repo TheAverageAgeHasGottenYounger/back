@@ -20,7 +20,7 @@ import young.blaybus.domain.member.Member;
 import young.blaybus.domain.senior.Senior;
 
 @Entity
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

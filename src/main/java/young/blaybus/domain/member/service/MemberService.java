@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import young.blaybus.api_response.exception.GeneralException;
 import young.blaybus.api_response.status.ErrorStatus;
@@ -39,17 +40,17 @@ public class MemberService {
     private final CertificateRepository certificateRepository;
     private final CenterRepository centerRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final S3FileService s3FileService;
-  private final JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
 
-  // 관리자 회원 등록
-    @Transactional(rollbackOn = Exception.class)
-    public void adminRegisterMember(CreateAdminRequest adminRequest, MultipartFile profileImage) {
+    // 관리자 회원 등록
+    @Transactional
+    public Member adminRegisterMember(CreateAdminRequest adminRequest) {
         LocalDateTime now = LocalDateTime.now();
 
-        String s3FileUrl = null;
-        if (profileImage != null) s3FileUrl = s3FileService.uploadS3File(profileImage).getFileUrl();
+        String profileUrl = "https://theaverageagegottenyounger.s3.ap-northeast-2.amazonaws.com/blaybus-basic-profile-image.png";
+        if (StringUtils.hasText(adminRequest.profileUrl())) profileUrl = adminRequest.profileUrl();
 
+        Center center = centerRepository.findByName(adminRequest.center().name());
         MemberRole role = MemberRole.ADMIN;
         Member member = Member.builder()
                 .id(adminRequest.id())
@@ -57,22 +58,22 @@ public class MemberService {
                 .phoneNumber(adminRequest.phoneNumber())
                 .address(new Address(adminRequest.city(), adminRequest.gu(), adminRequest.dong(), null))
                 .carYn(adminRequest.carYn())
-                .profileUrl(s3FileUrl)
+                .profileUrl(profileUrl)
                 .role(role)
+                .center(center)
                 .createdTime(now)
                 .build();
 
-        // DB에 데이터 영구 저장
-        memberRepository.save(member);
+        return memberRepository.save(member);
     }
 
     // 요양보호사 회원 등록
-    @Transactional(rollbackOn = Exception.class)
-    public void workerRegisterMember(CreateMemberRequest memberRequest, MultipartFile profileImage) {
+    @Transactional
+    public void workerRegisterMember(CreateMemberRequest memberRequest) {
         LocalDateTime now = LocalDateTime.now();
 
-        String s3FileUrl = null;
-        if (profileImage != null) s3FileUrl = s3FileService.uploadS3File(profileImage).getFileUrl();
+        String profileUrl = "https://theaverageagegottenyounger.s3.ap-northeast-2.amazonaws.com/blaybus-basic-profile-image.png";
+        if (StringUtils.hasText(memberRequest.profileUrl())) profileUrl = memberRequest.profileUrl();
 
         MemberRole role = MemberRole.WORKER;
         Member member = Member.builder()
@@ -81,7 +82,7 @@ public class MemberService {
                 .name(memberRequest.name())
                 .phoneNumber(memberRequest.phoneNumber())
                 .address(new Address(memberRequest.city(), memberRequest.gu(), memberRequest.dong(), null))
-                .profileUrl(s3FileUrl)
+                .profileUrl(profileUrl)
                 .role(role)
                 .carYn(memberRequest.carYn())
                 .dementiaEducationYn(memberRequest.dementiaEducationYn())
@@ -89,9 +90,9 @@ public class MemberService {
                 .introduction(memberRequest.introduction())
                 .careerPeriod(memberRequest.careerPeriod())
                 .createdTime(now)
+                .style(memberRequest.careStyle().getValue())
                 .build();
 
-        // DB에 데이터 영구 저장
         memberRepository.save(member);
 
         memberRequest.certificate().forEach(c -> {
@@ -102,11 +103,14 @@ public class MemberService {
                 default -> null;
             };
 
-            CertificateGrade grade = switch (c.getGrade()) {
-                case "1급" -> CertificateGrade.GRADE1;
-                case "2급" -> CertificateGrade.GRADE2;
-                default -> null;
-            };
+            CertificateGrade grade = null;
+            if (c.getGrade() != null) {
+                grade = switch (c.getGrade()) {
+                    case "1급" -> CertificateGrade.GRADE1;
+                    case "2급" -> CertificateGrade.GRADE2;
+                    default -> null;
+                };
+            }
 
             Certificate certificate = Certificate.builder()
                         .type(type)
@@ -146,18 +150,20 @@ public class MemberService {
         if (member != null) {
             if (certificate.isPresent() && member.getRole() == MemberRole.WORKER) {
                 certificate.get().forEach(c -> {
-                    getCertificate.add(new CreateCertificateRequest(c.getType().getValue(), c.getNumber(), c.getType().getValue()));
+                    getCertificate.add(new CreateCertificateRequest(c.getType().getValue(), c.getNumber(), c.getGrade().getValue()));
                 });
 
                 getMember = GetMember.builder()
                         .id(member.getId())
                         .name(member.getName())
+                        .profileUrl(member.getProfileUrl())
                         .phoneNumber(member.getPhoneNumber())
                         .city(member.getAddress().getCity())
                         .gu(member.getAddress().getDistrict())
                         .dong(member.getAddress().getDong())
                         .certificate(getCertificate)
                         .profileUrl(member.getProfileUrl())
+                        .style(member.getStyle())
                         .build();
 
                 return getMember;
@@ -167,6 +173,7 @@ public class MemberService {
                 if (center != null) {
                     getAdmin = GetAdmin.builder()
                             .id(member.getId())
+                            .profileUrl(member.getProfileUrl())
                             .city(member.getAddress().getCity())
                             .gu(member.getAddress().getDistrict())
                             .dong(member.getAddress().getDong())

@@ -52,4 +52,7 @@ public class GetMember {
     @Schema(description = "한줄 소개")
     private String introduction;
 
+    @Schema(description = "케어 스타일")
+    private String style;
+
 }

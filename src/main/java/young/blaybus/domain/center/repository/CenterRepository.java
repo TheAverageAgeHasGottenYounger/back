@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface CenterRepository extends JpaRepository<Center, Long> {
     Optional<List<Center>> findByNameContaining(String name);
+    Center findByName(String centerName);
 }

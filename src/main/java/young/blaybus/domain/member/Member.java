@@ -70,6 +70,9 @@ public class Member {
   @Comment("경력 기간")
   private String careerPeriod;
 
+  @Comment("케어 스타일")
+  private String style;
+
   @CreatedDate
   @Column(updatable = false)
   private LocalDateTime createdTime;
@@ -80,5 +83,4 @@ public class Member {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "center_id")
   private Center center;
-
 }

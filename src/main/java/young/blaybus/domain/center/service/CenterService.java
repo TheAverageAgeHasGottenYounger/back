@@ -2,15 +2,14 @@ package young.blaybus.domain.center.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import young.blaybus.domain.address.Address;
 import young.blaybus.domain.center.Center;
 import young.blaybus.domain.center.controller.response.GetCenter;
+import young.blaybus.domain.center.controller.response.GetCenterDetailInforResponse;
+import young.blaybus.domain.center.controller.response.GetCenterResponse;
 import young.blaybus.domain.center.repository.CenterRepository;
-import young.blaybus.domain.center.controller.request.CreateCenterRequest;
 import young.blaybus.domain.member.Member;
-import young.blaybus.domain.member.enums.MemberRole;
 import young.blaybus.domain.member.repository.MemberRepository;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
 
@@ -25,87 +24,67 @@ public class CenterService {
 
     private final CenterRepository centerRepository;
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    // 센터 등록
-    @Transactional(rollbackOn = Exception.class)
-    public void registerCenter(CreateCenterRequest centerRequest, CreateAdminRequest adminRequest) {
-        Optional<List<Center>> centers = centerRepository.findByNameContaining(centerRequest.name());
+    @Transactional
+    public GetCenterResponse registerCenter(String centerName) {
+        Center center = Center.builder()
+                .name(centerName)
+                .build();
 
-        Center registerCenter = null;
-        boolean isCenterRegister = false;
-        if (centers.isPresent()) {
-            for (Center center : centers.get()) {
-                if (center.getName().equals(centerRequest.name())) {
-                    registerCenter = center;
-                    isCenterRegister = true;
-                }
-            }
-        }
+        centerRepository.save(center);
 
-        // 해당 센터가 등록이 되어 있지 않을 경우
-        if (!isCenterRegister) {
-            LocalDateTime now = LocalDateTime.now();
+        Center center1 = centerRepository.findByName(centerName);
+        return GetCenterResponse.builder()
+                .id(String.valueOf(center1.getId()))
+                .name(center1.getName())
+                .build();
+    }
 
-            // 회원 리스트
-            List<Member> members = new ArrayList<>();
-            Member member = memberRepository.findById(adminRequest.id()).orElse(null);
-            if (member != null) members.add(member);
+    @Transactional
+    public GetCenterResponse getCenterCheck(String centerName) {
+        Center center1 = centerRepository.findByName(centerName);
+        return GetCenterResponse.builder()
+                .id(String.valueOf(center1.getId()))
+                .name(center1.getName())
+                .build();
+    }
 
-            Center center = Center.builder()
-                    .name(centerRequest.name())
-                    .bathCarYn(centerRequest.bathCarYn())
-                    .grade(centerRequest.grade())
-                    .operationPeriod(centerRequest.operationPeriod())
-                    .address(new Address(centerRequest.city(), centerRequest.gu(), centerRequest.dong(), null))
-                    .introduction(centerRequest.introduction())
-                    .createdTime(now)
-                    .memberList(members)
+    @Transactional
+    public GetCenterDetailInforResponse getCenterDetailInfor(String centerName) {
+        Center center = centerRepository.findByName(centerName);
+        return GetCenterDetailInforResponse.builder()
+                .id(String.valueOf(center.getId()))
+                .name(center.getName())
+                .city(center.getAddress().getCity())
+                .gu(center.getAddress().getDistrict())
+                .dong(center.getAddress().getDong())
+                .operationPeriod(center.getOperationPeriod())
+                .grade(center.getGrade())
+                .bathCarYn(center.getBathCarYn())
+                .introduction(center.getIntroduction())
+                .build();
+    }
+
+    // 센터 상세 정보 등록 (등록된 센터에 상세 정보 포함해 수정)
+    @Transactional
+    public void registerCenterDetailInfor(Member member, CreateAdminRequest adminRequest) {
+        if (member != null) System.out.println(member.getId());
+
+        Center center = centerRepository.findByName(adminRequest.center().name());
+        LocalDateTime now = LocalDateTime.now();
+
+        center = center.toBuilder()
+                    .id(center.getId())
+                    .name(adminRequest.center().name())
+                    .bathCarYn(adminRequest.center().bathCarYn())
+                    .grade(adminRequest.center().grade())
+                    .operationPeriod(adminRequest.center().operationPeriod())
+                    .address(new Address(adminRequest.center().city(), adminRequest.center().gu(), adminRequest.center().dong(), null))
+                    .introduction(adminRequest.center().introduction())
+                    .updatedTime(now)
                     .build();
 
-            centerRepository.save(center);
-
-            if (member != null) {
-                MemberRole role = MemberRole.ADMIN;
-                Member adminMember = Member.builder()
-                        .id(adminRequest.id())
-                        .password(bCryptPasswordEncoder.encode(adminRequest.password()))
-                        .phoneNumber(adminRequest.phoneNumber())
-                        .address(new Address(adminRequest.city(), adminRequest.gu(), adminRequest.dong(), null))
-                        .carYn(adminRequest.carYn())
-                        .profileUrl("")
-                        .role(role)
-                        .center(center)
-                        .createdTime(now)
-                        .build();
-
-                memberRepository.save(adminMember);
-            }
-        } else {
-            LocalDateTime now = LocalDateTime.now();
-
-            // 회원 리스트
-            List<Member> members = new ArrayList<>();
-            Member member = memberRepository.findById(adminRequest.id()).orElse(null);
-            if (member != null) members.add(member);
-
-            if (member != null) {
-                MemberRole role = MemberRole.ADMIN;
-                Member adminMember = Member.builder()
-                        .id(adminRequest.id())
-                        .password(bCryptPasswordEncoder.encode(adminRequest.password()))
-                        .phoneNumber(adminRequest.phoneNumber())
-                        .address(new Address(adminRequest.city(), adminRequest.gu(), adminRequest.dong(), null))
-                        .carYn(adminRequest.carYn())
-                        .profileUrl("")
-                        .role(role)
-                        .center(registerCenter)
-                        .createdTime(now)
-                        .build();
-
-                memberRepository.save(adminMember);
-            }
-        }
+        centerRepository.save(center);
     }
 
     // 센터 이름으로 센터 등록 여부 조회

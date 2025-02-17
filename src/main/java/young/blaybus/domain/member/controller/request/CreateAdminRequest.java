@@ -5,6 +5,10 @@ import young.blaybus.domain.center.controller.request.CreateCenterRequest;
 
 @Schema(description = "관리자 회원가입 요청 객체")
 public record CreateAdminRequest(
+
+    @Schema(description = "프로필 사진")
+    String profileUrl,
+
     @Schema(description = "전화번호")
     String phoneNumber,
 
