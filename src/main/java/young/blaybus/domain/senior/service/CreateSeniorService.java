@@ -37,8 +37,7 @@ public class CreateSeniorService {
       .orElseThrow(() -> new GeneralException(ErrorStatus.UNAUTHORIZED));
 
     String profileUrl = "https://theaverageagegottenyounger.s3.ap-northeast-2.amazonaws.com/blaybus-basic-profile-image.png";
-    boolean isProfileUrl = StringUtils.hasText(request.profileUrl());
-    if (isProfileUrl) profileUrl = request.profileUrl();
+    if (StringUtils.hasText(request.profileUrl())) profileUrl = request.profileUrl();
 
     Senior senior = Senior.builder()
       .name(request.name())
@@ -61,8 +60,7 @@ public class CreateSeniorService {
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "존재하지 않는 어르신 ID입니다."));
 
     String profileUrl = senior.getProfileUrl();
-    boolean isProfileUrl = StringUtils.hasText(request.profileUrl());
-    if (isProfileUrl) profileUrl = request.profileUrl();
+    if (StringUtils.hasText(request.profileUrl())) profileUrl = request.profileUrl();
 
     senior.toBuilder()
       .name(request.name())

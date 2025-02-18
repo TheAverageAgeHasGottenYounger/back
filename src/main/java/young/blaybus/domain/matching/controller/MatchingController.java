@@ -20,9 +20,9 @@ public class MatchingController {
 
     private final MatchingService matchingService;
 
-    // 매칭 요청 POST
+    // 매칭 요청
     @PostMapping(value = "/request/{worker-id}/{senior-id}")
-    @Operation(summary = "매칭 요청")
+    @Operation(summary = "(관리자) 매칭 요청")
     public ApiResponse<?> request(
         @PathVariable("senior-id") String seniorId,
         @PathVariable("worker-id") String workerId
@@ -33,7 +33,7 @@ public class MatchingController {
 
     // 매칭 현황 조회
     @GetMapping(value = "/statistics")
-    @Operation(summary = "매칭 현황 조회")
+    @Operation(summary = "(요양보호사) 매칭 현황 조회")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -46,7 +46,7 @@ public class MatchingController {
 
     // 관리자 쪽에서 요양보호사 매칭 현황 조회
     @GetMapping(value = "/request/senior/list")
-    @Operation(summary = "어르신 매칭 요청 목록 조회")
+    @Operation(summary = "(요양보호사) 어르신 매칭 요청 목록 조회")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -57,9 +57,22 @@ public class MatchingController {
         return ApiResponse.onSuccess(matchingService.getMatchingSeniorList());
     }
 
-    // 수락/거절/조율요청에 따라 Matching 테이블 내 status 컬럼 수정
+    // 관리자 쪽에서 매칭중인 어르신 목록 조회
+    @GetMapping(value = "/senior/list")
+    @Operation(summary = "(관리자) 매칭중인 어르신 목록 조회")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    content = @Content(schema = @Schema(implementation = GetProgressMatchingSeniorList.class))
+            )
+    })
+    public ApiResponse<GetProgressMatchingSeniorList> getMatchingSeniors() {
+        return ApiResponse.onSuccess(matchingService.getMatchingSeniors());
+    }
+
+    // Matching 테이블 내 status 컬럼 수정
     @PatchMapping(value = "/status/update")
-    @Operation(summary = "매칭 상태 수정")
+    @Operation(summary = "(요양보호사) 매칭 상태 수정")
     public ApiResponse<?> update(@RequestBody PatchStatusRequest statusRequest) {
         matchingService.matchingStatusPatch(statusRequest);
         return ApiResponse.onSuccess();
