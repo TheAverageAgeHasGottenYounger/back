@@ -90,14 +90,15 @@ public class RecommendService {
 
     JobSeek jobSeek = jobSeekRepository.findBySenior(senior);
 
+    // todo
     // 거리 : 0km 최고점, 350km 최하점 → 30점 만점
-    fitness += 30;
-    Coordinate memberGeocoding = mapService.geocoding(member.getAddress().toString());
-    Coordinate seniorGeocoding = mapService.geocoding(senior.getAddress());
-    Double distance = mapService.getDistance(memberGeocoding, seniorGeocoding);
-    double maxDistance = 350_000;
-
-    fitness -= Math.min(30, distance * 30 / maxDistance);
+//    fitness += 30;
+//    Coordinate memberGeocoding = mapService.geocoding(member.getAddress().toString());
+//    Coordinate seniorGeocoding = mapService.geocoding(senior.getAddress());
+//    Double distance = mapService.getDistance(memberGeocoding, seniorGeocoding);
+//    double maxDistance = 350_000;
+//
+//    fitness -= Math.min(30, distance * 30 / maxDistance);
 
     // 요일 → (노인의 희망 요일이 보호사의 요일과 겹치는 개수) * 15 / (노인의 희망 요일 개수) 점 → 15점 만점
     List<DayOfWeek> memberDayList = jobSearch.getTimeSlots().stream().map(JobSearchTimeSlot::getDay).toList();
