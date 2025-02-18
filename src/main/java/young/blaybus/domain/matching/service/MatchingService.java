@@ -3,6 +3,7 @@ package young.blaybus.domain.matching.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import young.blaybus.domain.center.Center;
 import young.blaybus.domain.certificate.Certificate;
 import young.blaybus.domain.certificate.repository.CertificateRepository;
 import young.blaybus.domain.certificate.request.CreateCertificateRequest;
@@ -128,6 +129,40 @@ public class MatchingService {
                 .build();
 
         matchingRepository.save(matchingUpdateObject);
+    }
+
+    // 매칭중인 어르신 목록 조회
+    public GetMatchingSeniorsList getMatchingSeniors() {
+        String adminId = SecurityUtils.getCurrentMemberName();
+        Member member = memberRepository.findById(adminId).orElse(null);
+
+        List<GetMatchingSeniors> seniorsList = new ArrayList<>();
+        if (member != null) {
+            long centerId = member.getCenter().getId();
+            List<Senior> center = seniorRepository.findByCenterId(centerId);
+            center.forEach(s -> {
+                List<Matching> matching = matchingRepository.findBySenior_Id(s.getId());
+                matching.forEach(m -> {
+                    if (m.getStatus().equals(MatchingStatus.PENDING)) {
+                        seniorsList.add(
+                            GetMatchingSeniors.builder()
+                                .seniorId(String.valueOf(s.getId()))
+                                .profileUrl(s.getProfileUrl())
+                                .name(s.getName())
+                                .sex(s.getSex().name())
+                                .birthday(s.getBirthday().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
+                                .address(s.getAddress())
+                                .build()
+                        );
+                    }
+                });
+            });
+
+        }
+
+        return GetMatchingSeniorsList.builder()
+                .seniorList(seniorsList)
+                .build();
     }
 
 }
