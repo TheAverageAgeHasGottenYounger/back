@@ -1,5 +1,6 @@
 package young.blaybus.domain.senior.repository;
 
+import static young.blaybus.domain.job_seek.QJobSeek.jobSeek;
 import static young.blaybus.domain.senior.QSenior.senior;
 import static young.blaybus.domain.senior.QSeniorDay.seniorDay;
 import static young.blaybus.domain.senior.QSeniorFoodAssist.seniorFoodAssist;
@@ -35,11 +36,13 @@ public class DetailSeniorRepository {
           senior.sex,
           senior.birthday,
           senior.address,
+          jobSeek.salary,
           senior.startTime,
           senior.endTime
         )
       )
       .from(senior)
+      .leftJoin(jobSeek).on(senior.eq(jobSeek.senior))
       .where(senior.id.eq(seniorId))
       .fetchOne();
   }
