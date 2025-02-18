@@ -10,11 +10,9 @@ import young.blaybus.domain.center.controller.response.GetCenterDetailInforRespo
 import young.blaybus.domain.center.controller.response.GetCenterResponse;
 import young.blaybus.domain.center.repository.CenterRepository;
 import young.blaybus.domain.member.Member;
-import young.blaybus.domain.member.repository.MemberRepository;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +21,8 @@ import java.util.Optional;
 public class CenterService {
 
     private final CenterRepository centerRepository;
-    private final MemberRepository memberRepository;
 
+    // 센터 등록
     @Transactional
     public GetCenterResponse registerCenter(String centerName) {
         Center center = Center.builder()
@@ -40,6 +38,7 @@ public class CenterService {
                 .build();
     }
 
+    // 센터 조회
     @Transactional
     public GetCenterResponse getCenterCheck(String centerName) {
         Center center1 = centerRepository.findByName(centerName);
@@ -49,6 +48,7 @@ public class CenterService {
                 .build();
     }
 
+    // 센터 상세 조회
     @Transactional
     public GetCenterDetailInforResponse getCenterDetailInfor(String centerName) {
         Center center = centerRepository.findByName(centerName);

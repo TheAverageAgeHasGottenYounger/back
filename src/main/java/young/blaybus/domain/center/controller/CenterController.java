@@ -14,7 +14,6 @@ import young.blaybus.domain.center.controller.response.GetCenter;
 import young.blaybus.domain.center.controller.response.GetCenterDetailInforResponse;
 import young.blaybus.domain.center.controller.response.GetCenterResponse;
 import young.blaybus.domain.center.service.CenterService;
-import young.blaybus.domain.matching.controller.response.GetMatchingSeniorList;
 
 @RestController
 @RequiredArgsConstructor
