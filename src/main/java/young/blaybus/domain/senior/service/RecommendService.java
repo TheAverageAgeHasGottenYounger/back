@@ -16,6 +16,7 @@ import young.blaybus.domain.certificate.enums.CertificateType;
 import young.blaybus.domain.certificate.repository.ListCertificateRepository;
 import young.blaybus.domain.job_search.JobSearch;
 import young.blaybus.domain.job_search.JobSearchDay;
+import young.blaybus.domain.job_search.JobSearchTimeSlot;
 import young.blaybus.domain.job_search.repository.JobSearchRepository;
 import young.blaybus.domain.job_seek.JobSeek;
 import young.blaybus.domain.job_seek.repository.JobSeekRepository;
@@ -25,6 +26,7 @@ import young.blaybus.domain.senior.Senior;
 import young.blaybus.domain.senior.SeniorDay;
 import young.blaybus.domain.senior.controller.response.ListRecommendDto;
 import young.blaybus.domain.senior.controller.response.ListRecommendResponse;
+import young.blaybus.domain.senior.controller.response.TimeSlotDto;
 import young.blaybus.domain.senior.repository.ListRecommendRepository;
 import young.blaybus.domain.senior.repository.SeniorRepository;
 import young.blaybus.map.controller.response.geocoding.Coordinate;
@@ -55,14 +57,21 @@ public class RecommendService {
       JobSearch jobSearch = jobSearchRepository.findByMemberId(member.getId()).orElse(null);
       if (jobSearch == null) continue;
 
+      // timeSlots 기반으로 요일 및 시간대 가져오기
+      List<TimeSlotDto> timeSlotDtos = jobSearch.getTimeSlots().stream()
+              .map(slot -> TimeSlotDto.builder()
+                      .day(slot.getDay())
+                      .startTime(slot.getStartTime().toString()) // LocalTime → String 변환
+                      .endTime(slot.getEndTime().toString())
+                      .build())
+              .toList();
+
       recommendList.add(
         ListRecommendDto.builder()
           .memberId(member.getId())
           .name(member.getName())
           .profileUrl(member.getProfileUrl())
-          .dayList(jobSearch.getDayList().stream().map(JobSearchDay::getDay).toList())
-          .startTime(jobSearch.getStartTime())
-          .endTime(jobSearch.getEndTime())
+          .timeSlots(timeSlotDtos)
           .careStyle(member.getCareStyle().getValue())
           .fitness(calculateFitness(member, jobSearch, senior))
           .build()
@@ -91,7 +100,7 @@ public class RecommendService {
     fitness -= Math.min(30, distance * 30 / maxDistance);
 
     // 요일 → (노인의 희망 요일이 보호사의 요일과 겹치는 개수) * 15 / (노인의 희망 요일 개수) 점 → 15점 만점
-    List<DayOfWeek> memberDayList = jobSearch.getDayList().stream().map(JobSearchDay::getDay).toList();
+    List<DayOfWeek> memberDayList = jobSearch.getTimeSlots().stream().map(JobSearchTimeSlot::getDay).toList();
     List<DayOfWeek> seniorDayList = senior.getDayList().stream().map(SeniorDay::getDay).toList();
     int intersectCount = memberDayList.stream()
       .filter(seniorDayList::contains)
@@ -99,16 +108,22 @@ public class RecommendService {
     fitness += (double) (15 * intersectCount) / seniorDayList.size();
 
     // 시간 → 겹치는 시간의 비율 * 15 (15 만점)
-    LocalTime memberStart = jobSearch.getStartTime();
-    LocalTime memberEnd = jobSearch.getEndTime();
-    LocalTime seniorStart = senior.getStartTime();
-    LocalTime seniorEnd = senior.getEndTime();
-    LocalTime overlapStart = memberStart.isBefore(seniorStart) ? seniorStart : memberStart;
-    LocalTime overlapEnd = memberEnd.isBefore(seniorEnd) ? memberEnd : seniorEnd;
-    if (overlapStart.isBefore(overlapEnd)) { // 겹치면
-      long overlapMinutes = Duration.between(overlapStart, overlapEnd).toMinutes();
-      long memberTotalMinutes = Duration.between(memberStart, memberEnd).toMinutes();
-      fitness += (double) 15 * overlapMinutes / memberTotalMinutes;
+    for (JobSearchTimeSlot slot : jobSearch.getTimeSlots()) {
+      LocalTime memberStart = slot.getStartTime();
+      LocalTime memberEnd = slot.getEndTime();
+      LocalTime seniorStart = senior.getStartTime();
+      LocalTime seniorEnd = senior.getEndTime();
+
+      LocalTime overlapStart = memberStart.isBefore(seniorStart) ? seniorStart : memberStart;
+      LocalTime overlapEnd = memberEnd.isBefore(seniorEnd) ? memberEnd : seniorEnd;
+
+      if (overlapStart.isBefore(overlapEnd)) { // 겹치는 경우
+        long overlapMinutes = Duration.between(overlapStart, overlapEnd).toMinutes();
+        long memberTotalMinutes = Duration.between(memberStart, memberEnd).toMinutes();
+        if (memberTotalMinutes > 0) {
+          fitness += (double) 15 * overlapMinutes / memberTotalMinutes;
+        }
+      }
     }
 
     // 자격증 : 요양보호사 제외 개수당 3점 → 10점 만점, 사회복지사 자격증 번호 1로 시작(1급)하면 2점 추가 (10 만점)
