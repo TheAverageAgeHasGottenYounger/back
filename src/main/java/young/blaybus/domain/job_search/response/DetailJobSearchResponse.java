@@ -16,6 +16,11 @@ import java.util.List;
 public class DetailJobSearchResponse {
   @Schema(description = "구직 정보 ID")
   private Long jobSearchId;
+  @Schema(description = "근무 시작 시간")
+  private String startTime;
+
+  @Schema(description = "근무 종료 시간")
+  private String endTime;
 
   @Schema(description = "희망 급여")
   private Integer salary;
@@ -23,6 +28,6 @@ public class DetailJobSearchResponse {
   @Schema(description = "근무 가능 지역 목록")
   private List<JobSearchAreaResponse> jobSearchAreas;
 
-  @Schema(description = "근무 가능 요일&시간대 목록")
-  private List<JobSearchTimeSlotResponse> timeSlots;
+  @Schema(description = "근무 가능 요일 목록")
+  private List<String> dayList;
 }
