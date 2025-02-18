@@ -17,9 +17,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import young.blaybus.domain.job_search.request.JobSearchAreaRequest;
+import young.blaybus.domain.job_search.request.JobSearchTimeSlotRequest;
 import young.blaybus.domain.job_search.request.UpdateJobSearchRequest;
 import young.blaybus.domain.member.Member;
-import young.blaybus.util.enums.DayOfWeek;
+
 
 @Entity
 @Builder
@@ -32,12 +33,6 @@ public class JobSearch {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Comment("시작 시간")
-  private LocalTime startTime;
-
-  @Comment("종료 시간")
-  private LocalTime endTime;
 
   @Comment("희망 급여")
   private Integer salary;
@@ -59,16 +54,9 @@ public class JobSearch {
 
   @Builder.Default
   @OneToMany(mappedBy = "jobSearch", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<JobSearchDay> dayList = new ArrayList<>();
+  private List<JobSearchTimeSlot> timeSlots = new ArrayList<>();
 
   public void updateFromDto(UpdateJobSearchRequest request){
-    if(request.startTime()!=null) {
-      this.startTime = LocalTime.parse(request.startTime());
-    }
-
-    if(request.endTime()!=null) {
-      this.endTime = LocalTime.parse(request.endTime());
-    }
 
     if(request.salary()!=null) {
       this.salary = request.salary();
@@ -84,12 +72,14 @@ public class JobSearch {
         }
     }
 
-    if(!request.dayList().isEmpty()) {
-      this.dayList.clear();
-      for (DayOfWeek dayOfWeek : request.dayList()) {
-        this.dayList.add(JobSearchDay.builder()
+    if (!request.timeSlots().isEmpty()) {
+      this.timeSlots.clear();
+      for (JobSearchTimeSlotRequest timeSlot : request.timeSlots()) {
+        this.timeSlots.add(JobSearchTimeSlot.builder()
                 .jobSearch(this)
-                .day(dayOfWeek)
+                .day(timeSlot.day())
+                .startTime(LocalTime.parse(timeSlot.startTime()))
+                .endTime(LocalTime.parse(timeSlot.endTime()))
                 .build());
       }
     }

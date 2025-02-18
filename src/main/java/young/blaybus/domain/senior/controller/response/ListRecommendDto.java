@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import young.blaybus.domain.job_search.response.JobSearchTimeSlotResponse;
 import young.blaybus.util.enums.DayOfWeek;
 
 @Builder
@@ -26,15 +27,8 @@ public class ListRecommendDto {
   @Schema(description = "프로필 사진")
   private String profileUrl;
 
-  @Setter
-  @Schema(description = "희망 요일 목록")
-  private List<DayOfWeek> dayList;
-
-  @Schema(description = "희망 시작 시간")
-  private LocalTime startTime;
-
-  @Schema(description = "희망 종료 시간")
-  private LocalTime endTime;
+  @Schema(description = "근무 가능 요일&시간대 목록")
+  private List<TimeSlotDto> timeSlots;
 
   @Schema(description = "돌봄 스타일")
   private String careStyle;
