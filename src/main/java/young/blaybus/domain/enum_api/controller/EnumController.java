@@ -60,6 +60,12 @@ public class EnumController {
     return ApiResponse.onSuccess(enumService.getCertificateTypeList());
   }
 
+  @GetMapping("/care-grade")
+  @Operation(summary = "장기요양 등급 목록 조회")
+  public ApiResponse<EnumResponse> getCareGradeList() {
+    return ApiResponse.onSuccess(enumService.getCareGradeList());
+  }
+
 
 
 }
