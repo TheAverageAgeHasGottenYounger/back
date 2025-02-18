@@ -49,6 +49,7 @@ public class CreateSeniorService {
       .startTime(request.startTime())
       .endTime(request.endTime())
       .careStyle(request.careStyle())
+      .careGrade(request.careGrade())
       .center(member.getCenter())
       .build();
 
