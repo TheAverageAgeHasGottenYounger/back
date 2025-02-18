@@ -3,17 +3,12 @@ package young.blaybus.domain.matching.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import young.blaybus.domain.center.Center;
-import young.blaybus.domain.certificate.Certificate;
-import young.blaybus.domain.certificate.repository.CertificateRepository;
-import young.blaybus.domain.certificate.request.CreateCertificateRequest;
 import young.blaybus.domain.matching.Matching;
 import young.blaybus.domain.matching.controller.request.PatchStatusRequest;
 import young.blaybus.domain.matching.controller.response.*;
 import young.blaybus.domain.matching.enums.MatchingStatus;
 import young.blaybus.domain.matching.repository.MatchingRepository;
 import young.blaybus.domain.member.Member;
-import young.blaybus.domain.member.controller.response.GetMember;
 import young.blaybus.domain.member.repository.MemberRepository;
 import young.blaybus.domain.member.security.SecurityUtils;
 import young.blaybus.domain.senior.Senior;
@@ -34,10 +29,9 @@ public class MatchingService {
     private final MemberRepository memberRepository;
     private final SeniorRepository seniorRepository;
     private final MatchingRepository matchingRepository;
-    private final CertificateRepository certificateRepository;
 
     // 매칭 요청
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional
     public void matchingRequest(String workerId, long seniorId) {
         Member member = memberRepository.findById(workerId).orElse(null);
         Senior senior = seniorRepository.findById(seniorId).orElse(null);
@@ -53,7 +47,7 @@ public class MatchingService {
     }
 
     // 매칭 현황 조회 (특정)
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional
     public GetMatchingStatistics getMatching() {
         String workerId = SecurityUtils.getCurrentMemberName();
         Member member = memberRepository.findById(workerId).orElse(null);
@@ -86,7 +80,7 @@ public class MatchingService {
     }
 
     // 매칭 현황 어르신 리스트 조회 -> 요양보호사 쪽에서 어르신 매칭 요청 조회
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional
     public List<GetMatchingSeniorListResponse> getMatchingSeniorList() {
         String workerId = SecurityUtils.getCurrentMemberName();
         List<Matching> matching = matchingRepository.findByMember_Id(workerId);
@@ -116,7 +110,7 @@ public class MatchingService {
     }
 
     // 매칭 상태 수정
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional
     public void matchingStatusPatch(PatchStatusRequest statusRequest) {
         String workerId = SecurityUtils.getCurrentMemberName();
         Matching matching = matchingRepository.findBySenior_IdAndMember_Id(Long.parseLong(statusRequest.seniorId()), workerId);
@@ -132,20 +126,20 @@ public class MatchingService {
     }
 
     // 매칭중인 어르신 목록 조회
-    public GetMatchingSeniorsList getMatchingSeniors() {
+    @Transactional
+    public GetProgressMatchingSeniorList getMatchingSeniors() {
         String adminId = SecurityUtils.getCurrentMemberName();
         Member member = memberRepository.findById(adminId).orElse(null);
 
-        List<GetMatchingSeniors> seniorsList = new ArrayList<>();
+        List<GetProgressMatchingSeniors> seniorsList = new ArrayList<>();
         if (member != null) {
-            long centerId = member.getCenter().getId();
-            List<Senior> center = seniorRepository.findByCenterId(centerId);
+            List<Senior> center = seniorRepository.findByCenterId(member.getCenter().getId());
             center.forEach(s -> {
                 List<Matching> matching = matchingRepository.findBySenior_Id(s.getId());
                 matching.forEach(m -> {
                     if (m.getStatus().equals(MatchingStatus.PENDING)) {
                         seniorsList.add(
-                            GetMatchingSeniors.builder()
+                            GetProgressMatchingSeniors.builder()
                                 .seniorId(String.valueOf(s.getId()))
                                 .profileUrl(s.getProfileUrl())
                                 .name(s.getName())
@@ -160,7 +154,7 @@ public class MatchingService {
 
         }
 
-        return GetMatchingSeniorsList.builder()
+        return GetProgressMatchingSeniorList.builder()
                 .seniorList(seniorsList)
                 .build();
     }

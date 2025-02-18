@@ -11,8 +11,8 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @Schema(description = "매칭중인 어르신 목록 조회 응답 객체")
-public class GetMatchingSeniorsList {
+public class GetProgressMatchingSeniorList {
 
     @Schema(description = "매칭중인 어르신 목록")
-    private List<GetMatchingSeniors> seniorList;
+    private List<GetProgressMatchingSeniors> seniorList;
 }

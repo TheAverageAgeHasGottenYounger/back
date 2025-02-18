@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @Schema(description = "매칭 진행중인 어르신 조회 응답 객체")
-public class GetMatchingSeniors {
+public class GetProgressMatchingSeniors {
 
     @Schema(description = "어르신 ID")
     private String seniorId;

@@ -20,7 +20,7 @@ public class MatchingController {
 
     private final MatchingService matchingService;
 
-    // 매칭 요청 POST
+    // 매칭 요청
     @PostMapping(value = "/request/{worker-id}/{senior-id}")
     @Operation(summary = "(관리자) 매칭 요청")
     public ApiResponse<?> request(
@@ -63,14 +63,14 @@ public class MatchingController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
-                    content = @Content(schema = @Schema(implementation = GetMatchingSeniorsList.class))
+                    content = @Content(schema = @Schema(implementation = GetProgressMatchingSeniorList.class))
             )
     })
-    public ApiResponse<GetMatchingSeniorsList> getMatchingSeniors() {
+    public ApiResponse<GetProgressMatchingSeniorList> getMatchingSeniors() {
         return ApiResponse.onSuccess(matchingService.getMatchingSeniors());
     }
 
-    // 수락/거절/조율요청에 따라 Matching 테이블 내 status 컬럼 수정
+    // Matching 테이블 내 status 컬럼 수정
     @PatchMapping(value = "/status/update")
     @Operation(summary = "(요양보호사) 매칭 상태 수정")
     public ApiResponse<?> update(@RequestBody PatchStatusRequest statusRequest) {
