@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import young.blaybus.api_response.ApiResponse;
@@ -53,7 +54,7 @@ public class MatchingController {
                     content = @Content(schema = @Schema(implementation = GetMatchingSeniorListResponse.class))
             )
     })
-    public ApiResponse<?> getMatchingSeniorList() {
+    public ApiResponse<List<GetMatchingSeniorListResponse>> getMatchingSeniorList() {
         return ApiResponse.onSuccess(matchingService.getMatchingSeniorList());
     }
 

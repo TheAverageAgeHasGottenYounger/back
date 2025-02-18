@@ -2,8 +2,6 @@ package young.blaybus.domain.matching.controller.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import young.blaybus.domain.address.Address;
-import young.blaybus.util.enums.CareStyle;
 import young.blaybus.util.enums.DayOfWeek;
 
 import java.util.List;
@@ -17,7 +15,7 @@ import java.util.List;
 public class GetMatchingSeniorListResponse {
 
     @Schema(description = "어르신 ID")
-    private String seniorId;
+    private long seniorId;
 
     @Schema(description = "프로필 사진")
     private String profileUrl;
@@ -39,4 +37,7 @@ public class GetMatchingSeniorListResponse {
 
     @Schema(description = "케어 스타일")
     private String careStyle;
+
+    @Schema(description = "적합도")
+    private int fitness;
 }
