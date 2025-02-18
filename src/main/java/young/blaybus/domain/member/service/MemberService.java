@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 import young.blaybus.api_response.exception.GeneralException;
 import young.blaybus.api_response.status.ErrorStatus;
 import young.blaybus.domain.address.Address;
@@ -20,13 +19,14 @@ import young.blaybus.domain.certificate.request.CreateCertificateRequest;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
 import young.blaybus.domain.member.controller.request.CreateMemberRequest;
+import young.blaybus.domain.member.controller.response.CurrentMemberResponse;
 import young.blaybus.domain.member.controller.response.GetAdmin;
 import young.blaybus.domain.member.controller.response.GetCenterCheckResponse;
 import young.blaybus.domain.member.controller.response.GetMember;
 import young.blaybus.domain.member.enums.MemberRole;
 import young.blaybus.domain.member.repository.MemberRepository;
+import young.blaybus.domain.member.security.SecurityUtils;
 import young.blaybus.domain.member.security.jwt.provider.JwtProvider;
-import young.blaybus.domain.s3_file.service.S3FileService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -89,7 +89,7 @@ public class MemberService {
                 .introduction(memberRequest.introduction())
                 .careerPeriod(memberRequest.careerPeriod())
                 .createdTime(now)
-                .style(memberRequest.careStyle().getValue())
+                .careStyle(memberRequest.careStyle())
                 .build();
 
         memberRepository.save(member);
@@ -162,7 +162,7 @@ public class MemberService {
                         .dong(member.getAddress().getDong())
                         .certificate(getCertificate)
                         .profileUrl(member.getProfileUrl())
-                        .style(member.getStyle())
+                        .style(member.getCareStyle().getValue())
                         .build();
 
                 return getMember;
@@ -203,5 +203,14 @@ public class MemberService {
         }
 
         return jwtProvider.createAccessToken(id, String.valueOf(optionalMember.get().getRole()));
+    }
+
+    public CurrentMemberResponse getCurrentMember() {
+        Member member = memberRepository.findById(SecurityUtils.getCurrentMemberName())
+          .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST));
+        return CurrentMemberResponse.builder()
+          .memberId(member.getId())
+          .role(member.getRole())
+          .build();
     }
 }

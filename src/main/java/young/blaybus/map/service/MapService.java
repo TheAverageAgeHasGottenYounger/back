@@ -25,7 +25,6 @@ import young.blaybus.map.controller.response.geocoding.Coordinate;
 import young.blaybus.map.controller.response.geocoding.GeocodingResponse;
 import young.blaybus.map.controller.response.poi.ListPoiResponse;
 import young.blaybus.map.controller.response.matrix.MatrixResponse;
-import young.blaybus.map.controller.response.poi.PoiDto;
 import young.blaybus.map.repository.CityRepository;
 import young.blaybus.map.repository.DongRepository;
 import young.blaybus.map.repository.GuGunRepository;
@@ -57,11 +56,9 @@ public class MapService {
   /**
    * 주소 -> 위도/경도 변환
    */
-  public Coordinate geocoding(String cityDo, String guGun, String dong) {
-
-    // 상세주소 받게되면 dong 뒤에 맨 앞 공백과 함께 추가한 뒤 붙여서 요청
+  public Coordinate geocoding(String address) {
     GeocodingResponse response = skClient.geocoding(
-      appKey, version, cityDo + " " + guGun + " " + dong, addressFlag, coordType, count
+      appKey, version, address, addressFlag, coordType, count
     );
 
     return response.getCoordinateInfo().getCoordinate().get(0);
@@ -82,12 +79,7 @@ public class MapService {
   }
 
   public ListPoiResponse getPoiList(SearchPoiRequest request) {
-
-    ListPoiResponse response = skClient.poi(appKey, version, request.address());
-    for (PoiDto poi : response.getSearchPoiInfo().getPoiResponse().getPoiList()) {
-      System.out.println("poi = " + poi);
-    }
-    return response;
+    return skClient.poi(appKey, version, request.address());
   }
 
   public void readMapExcel() {

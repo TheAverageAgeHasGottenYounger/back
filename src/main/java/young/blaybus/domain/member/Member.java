@@ -17,6 +17,7 @@ import young.blaybus.config.jpa.CryptoConverter;
 import young.blaybus.domain.address.Address;
 import young.blaybus.domain.center.Center;
 import young.blaybus.domain.member.enums.MemberRole;
+import young.blaybus.util.enums.CareStyle;
 
 @Entity
 @Builder
@@ -70,8 +71,9 @@ public class Member {
   @Comment("경력 기간")
   private String careerPeriod;
 
-  @Comment("케어 스타일")
-  private String style;
+  @Enumerated(value = EnumType.STRING)
+  @Comment("돌봄 스타일")
+  private CareStyle careStyle;
 
   @CreatedDate
   @Column(updatable = false)
