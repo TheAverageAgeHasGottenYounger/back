@@ -10,6 +10,7 @@ import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
 import young.blaybus.domain.member.controller.request.CreateMemberRequest;
 import young.blaybus.domain.member.controller.response.CurrentMemberResponse;
+import young.blaybus.domain.member.controller.response.LoginResponse;
 import young.blaybus.domain.member.service.MemberService;
 
 @RestController
@@ -73,7 +74,7 @@ public class MemberController {
     // 로그인
     @PostMapping(value = "/login/v2")
     @Operation(summary = "로그인 V2")
-    public ApiResponse<?> loginV2(@RequestParam String id, @RequestParam String password) {
+    public ApiResponse<LoginResponse> loginV2(@RequestParam String id, @RequestParam String password) {
         return ApiResponse.onSuccess(memberService.login(id, password));
     }
 
