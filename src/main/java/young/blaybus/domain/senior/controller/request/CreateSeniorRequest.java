@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import young.blaybus.domain.senior.enums.CareGrade;
 import young.blaybus.domain.senior.enums.Sex;
 import young.blaybus.util.enums.CareStyle;
 import young.blaybus.util.enums.DayOfWeek;
@@ -41,7 +42,9 @@ public record CreateSeniorRequest(
 
   List<LifeAssist> lifeAssistList,
 
-  CareStyle careStyle
+  CareStyle careStyle,
+
+  CareGrade careGrade
 
 ) {
 

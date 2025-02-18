@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import young.blaybus.domain.certificate.enums.CertificateType;
 import young.blaybus.domain.enum_api.controller.response.EnumDto;
 import young.blaybus.domain.enum_api.controller.response.EnumResponse;
+import young.blaybus.domain.senior.enums.CareGrade;
 import young.blaybus.util.enums.CareStyle;
 import young.blaybus.util.enums.DayOfWeek;
 import young.blaybus.util.enums.assist.FoodAssist;
@@ -143,6 +144,21 @@ public class EnumService {
 
     return EnumResponse.builder()
       .enumList(certificateTypeList)
+      .build();
+  }
+
+  public EnumResponse getCareGradeList() {
+    List<EnumDto> careGradeList =
+      Stream.of(CareGrade.values())
+        .map(value -> EnumDto.builder()
+          .code(value.name())
+          .value(value.getValue())
+          .build()
+        )
+        .toList();
+
+    return EnumResponse.builder()
+      .enumList(careGradeList)
       .build();
   }
 }
