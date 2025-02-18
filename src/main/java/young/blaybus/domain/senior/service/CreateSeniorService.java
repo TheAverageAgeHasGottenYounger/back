@@ -36,7 +36,7 @@ public class CreateSeniorService {
     Member member = memberRepository.findById(currentMemberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.UNAUTHORIZED));
 
-    String profileUrl = null;
+    String profileUrl = "https://theaverageagegottenyounger.s3.ap-northeast-2.amazonaws.com/blaybus-basic-profile-image.png";
     boolean isProfileUrl = StringUtils.hasText(request.profileUrl());
     if (isProfileUrl) profileUrl = request.profileUrl();
 
