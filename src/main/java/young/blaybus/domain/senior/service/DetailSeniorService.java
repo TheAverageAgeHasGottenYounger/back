@@ -13,6 +13,7 @@ import young.blaybus.domain.member.security.SecurityUtils;
 import young.blaybus.domain.senior.controller.response.DetailMatchingSeniorResponse;
 import young.blaybus.domain.senior.controller.response.DetailSeniorResponse;
 import young.blaybus.domain.senior.repository.DetailSeniorRepository;
+import young.blaybus.domain.senior.repository.SeniorRepository;
 import young.blaybus.util.enums.DayOfWeek;
 import young.blaybus.util.enums.assist.FoodAssist;
 import young.blaybus.util.enums.assist.LifeAssist;
@@ -26,6 +27,8 @@ public class DetailSeniorService {
 
   private final DetailSeniorRepository detailSeniorRepository;
   private final MemberRepository memberRepository;
+  private final RecommendService recommendService;
+  private final SeniorRepository seniorRepository;
 
 
   public DetailSeniorResponse getSenior(Long seniorId) {
@@ -56,6 +59,8 @@ public class DetailSeniorService {
       .orElseThrow(() -> new GeneralException(ErrorStatus.UNAUTHORIZED));
 
     DetailMatchingSeniorResponse response = detailSeniorRepository.getMatchingSenior(seniorId, worker);
+    response.setFitness(recommendService.calculateFitness(worker,
+      seniorRepository.findById(seniorId).orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST))));
 
     List<DayOfWeek> seniorDayList = detailSeniorRepository.getSeniorDayList(seniorId);
     response.setDayList(seniorDayList.stream().map(Enum::name).toList());
