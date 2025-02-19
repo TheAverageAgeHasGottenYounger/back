@@ -74,7 +74,4 @@ public class DetailSeniorResponse {
 
   private LocalTime endTime;
 
-  public String getCareGrade() {
-    return careGrade.getValue();
-  }
 }
