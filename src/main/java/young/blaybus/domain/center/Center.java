@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -64,9 +65,11 @@ public class Center {
   @LastModifiedDate
   private LocalDateTime updatedTime;
 
+  @Default
   @OneToMany(mappedBy = "center", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Member> memberList = new ArrayList<>();
 
+  @Default
   @OneToMany(mappedBy = "center", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Senior> seniorList = new ArrayList<>();
 

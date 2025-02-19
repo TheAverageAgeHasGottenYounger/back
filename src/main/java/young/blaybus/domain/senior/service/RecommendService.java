@@ -63,7 +63,7 @@ public class RecommendService {
           .dayList(jobSearch.getDayList().stream().map(JobSearchDay::getDay).toList())
           .startTime(jobSearch.getStartTime())
           .endTime(jobSearch.getEndTime())
-          .careStyle(member.getCareStyle().getValue())
+          .careStyle(member.getCareStyle())
           .fitness(calculateFitness(member, senior))
           .build()
       );
