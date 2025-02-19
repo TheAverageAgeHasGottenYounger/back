@@ -53,6 +53,51 @@ public class CreateSeniorService {
       .build();
 
     seniorRepository.save(senior);
+
+    // 어르신 희망 요일
+    request.dayList().forEach(day ->
+      senior.getDayList().add(
+        SeniorDay.builder()
+          .senior(senior)
+          .day(day)
+          .build()
+      ));
+
+    // 어르신 식사 보조
+    request.foodAssistList().forEach(foodAssist ->
+      senior.getFoodAssistList().add(
+        SeniorFoodAssist.builder()
+          .senior(senior)
+          .foodAssist(foodAssist)
+          .build()
+      ));
+
+    // 어르신 이동 보조
+    request.moveAssistList().forEach(moveAssist ->
+      senior.getMoveAssistList().add(
+        SeniorMoveAssist.builder()
+          .senior(senior)
+          .moveAssist(moveAssist)
+          .build()
+      ));
+
+    // 어르신 일상 보조
+    request.lifeAssistList().forEach(lifeAssist ->
+      senior.getLifeAssistList().add(
+        SeniorLifeAssist.builder()
+          .senior(senior)
+          .lifeAssist(lifeAssist)
+          .build()
+      ));
+
+    // 어르신 배변 보조
+    request.toiletAssistList().forEach(toiletAssist ->
+      senior.getToiletAssistList().add(
+        SeniorToiletAssist.builder()
+          .senior(senior)
+          .toiletAssist(toiletAssist)
+          .build()
+      ));
   }
 
   public void updateSenior(Long seniorId, UpdateSeniorRequest request) {
