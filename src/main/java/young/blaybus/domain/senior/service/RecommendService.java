@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import young.blaybus.api_response.exception.GeneralException;
 import young.blaybus.api_response.status.ErrorStatus;
+import young.blaybus.domain.address.Address;
 import young.blaybus.domain.certificate.Certificate;
 import young.blaybus.domain.certificate.enums.CertificateType;
 import young.blaybus.domain.certificate.repository.ListCertificateRepository;
 import young.blaybus.domain.job_search.JobSearch;
 import young.blaybus.domain.job_search.JobSearchDay;
 import young.blaybus.domain.job_search.repository.JobSearchRepository;
-import young.blaybus.domain.job_seek.JobSeek;
-import young.blaybus.domain.job_seek.repository.JobSeekRepository;
 import young.blaybus.domain.matching.repository.ListMatchingRepository;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.senior.Senior;
@@ -39,7 +38,6 @@ public class RecommendService {
   private final ListRecommendRepository listRecommendRepository;
   private final SeniorRepository seniorRepository;
   private final JobSearchRepository jobSearchRepository;
-  private final JobSeekRepository jobSeekRepository;
   private final ListMatchingRepository listMatchingRepository;
   private final ListCertificateRepository listCertificateRepository;
   private final MapService mapService;
@@ -80,17 +78,20 @@ public class RecommendService {
     double fitness = 0.0;
 
     JobSearch jobSearch = jobSearchRepository.findByMemberId(member.getId()).orElse(null);
-    JobSeek jobSeek = jobSeekRepository.findBySenior(senior);
 
     // 거리 : 0km 최고점, 350km 최하점 → 30점 만점
-    fitness += 30;
-    // todo 429 시 로직 추가
-//    Coordinate memberGeocoding = mapService.geocoding(member.getAddress().toString());
-//    Coordinate seniorGeocoding = mapService.geocoding(senior.getAddress());
-//    Double distance = mapService.getDistance(memberGeocoding, seniorGeocoding);
-    double maxDistance = 350_000;
 
-//    fitness -= Math.min(30, distance * 30 / maxDistance);
+    try {
+      fitness += 30;
+      Coordinate memberGeocoding = mapService.geocoding(member.getAddress().toString());
+      Coordinate seniorGeocoding = mapService.geocoding(senior.getAddress());
+      Double distance = mapService.getDistance(memberGeocoding, seniorGeocoding);
+      double maxDistance = 350_000;
+      fitness -= Math.min(30, distance * 30 / maxDistance);
+    } catch (Exception e) { // API 무료 요청 횟수 초과 시
+      fitness += 15;
+//      fitness += Address.calculateDistanceScore(member.getAddress(), senior.getAddress());
+    }
 
     // 요일 → (노인의 희망 요일이 보호사의 요일과 겹치는 개수) * 15 / (노인의 희망 요일 개수) 점 → 15점 만점
     assert jobSearch != null;
@@ -124,8 +125,8 @@ public class RecommendService {
 
     // 노인 시급 < 보호사 시급일 때, 10 - 0.001 * (보호사 시급 - 노인 시급) → 1000원 차이당 1점 감소, 최소 0점 (10 만점)
     fitness += 10;
-    if (jobSeek.getSalary() < jobSearch.getSalary())
-      fitness -= Math.max(10, 0.001 * (jobSearch.getSalary() - jobSeek.getSalary()));
+    if (senior.getSalary() < jobSearch.getSalary())
+      fitness -= Math.max(10, 0.001 * (jobSearch.getSalary() - senior.getSalary()));
 
     // 요양 스타일 일치하면 5점
     if (member.getCareStyle().equals(senior.getCareStyle())) fitness += 5;

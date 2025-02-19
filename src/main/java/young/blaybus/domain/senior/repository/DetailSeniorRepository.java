@@ -1,6 +1,5 @@
 package young.blaybus.domain.senior.repository;
 
-import static young.blaybus.domain.job_seek.QJobSeek.jobSeek;
 import static young.blaybus.domain.matching.QMatching.matching;
 import static young.blaybus.domain.senior.QSenior.senior;
 import static young.blaybus.domain.senior.QSeniorDay.seniorDay;
@@ -41,13 +40,12 @@ public class DetailSeniorRepository {
           senior.sex,
           senior.birthday,
           senior.address,
-          jobSeek.salary,
+          senior.salary,
           senior.startTime,
           senior.endTime
         )
       )
       .from(senior)
-      .leftJoin(jobSeek).on(senior.eq(jobSeek.senior))
       .where(senior.id.eq(seniorId))
       .fetchOne();
   }
@@ -109,7 +107,7 @@ public class DetailSeniorRepository {
           senior.sex,
           senior.birthday,
           senior.address,
-          jobSeek.salary,
+          senior.salary,
           senior.startTime,
           senior.endTime,
           matching.fitness,
@@ -118,7 +116,6 @@ public class DetailSeniorRepository {
       )
       .from(senior)
       .innerJoin(matching).on(matching.senior.eq(senior), matching.member.eq(worker))
-      .leftJoin(jobSeek).on(senior.eq(jobSeek.senior))
       .where(senior.id.eq(seniorId))
       .fetchOne();
   }
