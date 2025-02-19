@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: blaybus
+
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+      enabled: true
+
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL_DEV}
+    username: ${DB_USERNAME_DEV}
+    password: ${DB_PW_DEV}
+
+  data:
+    redis:
+      port: 6379
+      host: ${REDIS_HOST}
+      repositories:
+        enabled: false
+
+sk:
+  app-key: ${SK_APP_KEY}
+  url: https://apis.openapi.sk.com/tmap
+
+jwt:
+  secret: ${JWT}
+
+#  mail:
+#    host: smtp.naver.com
+#    port: ${MAIL_PORT}
+#    username: ${MAIL_USERNAME}
+#    password: ${MAIL_PW}
+#    properties:
+#      mail:
+#        debug: true
+#        smtp.auth: true
+#        smtp.ssl.enable: true
+#        smtp.ssl.trust: smtp.naver.com
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+crypto:
+  private-key: ${CRYPTO_PRIVATE_KEY}
+  transformation: ${CRYPTO_TRANSFORMATION}
