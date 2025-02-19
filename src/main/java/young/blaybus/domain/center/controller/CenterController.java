@@ -13,6 +13,7 @@ import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.center.controller.response.GetCenter;
 import young.blaybus.domain.center.controller.response.GetCenterDetailInforResponse;
 import young.blaybus.domain.center.controller.response.GetCenterResponse;
+import young.blaybus.domain.center.controller.response.GetSeniorCountResponse;
 import young.blaybus.domain.center.service.CenterService;
 
 @RestController
@@ -68,6 +69,18 @@ public class CenterController {
   })
   public ApiResponse<GetCenterDetailInforResponse> getCenterDetailInfor(@RequestParam String centerName) {
     return ApiResponse.onSuccess(centerService.getCenterDetailInfor(centerName));
+  }
+
+  @GetMapping("/center/count")
+  @Operation(summary = "소속 센터에 등록된 어르신 수")
+  @ApiResponses(value = {
+          @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                  responseCode = "200",
+                  content = @Content(schema = @Schema(implementation = GetSeniorCountResponse.class))
+          )
+  })
+  public ApiResponse<GetSeniorCountResponse> getSeniorCount() {
+    return ApiResponse.onSuccess(centerService.getSeniorCount());
   }
 
 }
