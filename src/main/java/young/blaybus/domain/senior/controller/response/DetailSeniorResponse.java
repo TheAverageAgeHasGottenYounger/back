@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import young.blaybus.domain.senior.enums.CareGrade;
 import young.blaybus.domain.senior.enums.Sex;
+import young.blaybus.util.enums.CareStyle;
 import young.blaybus.util.enums.DayOfWeek;
 import young.blaybus.util.enums.assist.FoodAssist;
 import young.blaybus.util.enums.assist.LifeAssist;
@@ -39,6 +40,8 @@ public class DetailSeniorResponse {
   private Integer salary;
 
   private CareGrade careGrade;
+
+  private CareStyle careStyle;
 
 //  @Setter
 //  private List<String> dayValueList;
