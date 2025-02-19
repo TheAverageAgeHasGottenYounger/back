@@ -36,6 +36,7 @@ public class DetailSeniorRepository {
           senior.id.as("seniorId"),
           senior.name,
           senior.careGrade,
+          senior.careStyle,
           senior.profileUrl,
           senior.sex,
           senior.birthday,
