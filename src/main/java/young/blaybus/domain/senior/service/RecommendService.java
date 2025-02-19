@@ -64,7 +64,7 @@ public class RecommendService {
           .startTime(jobSearch.getStartTime())
           .endTime(jobSearch.getEndTime())
           .careStyle(member.getCareStyle().getValue())
-          .fitness(calculateFitness(member, jobSearch, senior))
+          .fitness(calculateFitness(member, senior))
           .build()
       );
     }
@@ -76,21 +76,24 @@ public class RecommendService {
       .build();
   }
 
-  private int calculateFitness(Member member, JobSearch jobSearch, Senior senior) {
+  public int calculateFitness(Member member, Senior senior) {
     double fitness = 0.0;
 
+    JobSearch jobSearch = jobSearchRepository.findByMemberId(member.getId()).orElse(null);
     JobSeek jobSeek = jobSeekRepository.findBySenior(senior);
 
     // 거리 : 0km 최고점, 350km 최하점 → 30점 만점
     fitness += 30;
-    Coordinate memberGeocoding = mapService.geocoding(member.getAddress().toString());
-    Coordinate seniorGeocoding = mapService.geocoding(senior.getAddress());
-    Double distance = mapService.getDistance(memberGeocoding, seniorGeocoding);
+    // todo 429 시 로직 추가
+//    Coordinate memberGeocoding = mapService.geocoding(member.getAddress().toString());
+//    Coordinate seniorGeocoding = mapService.geocoding(senior.getAddress());
+//    Double distance = mapService.getDistance(memberGeocoding, seniorGeocoding);
     double maxDistance = 350_000;
 
-    fitness -= Math.min(30, distance * 30 / maxDistance);
+//    fitness -= Math.min(30, distance * 30 / maxDistance);
 
     // 요일 → (노인의 희망 요일이 보호사의 요일과 겹치는 개수) * 15 / (노인의 희망 요일 개수) 점 → 15점 만점
+    assert jobSearch != null;
     List<DayOfWeek> memberDayList = jobSearch.getDayList().stream().map(JobSearchDay::getDay).toList();
     List<DayOfWeek> seniorDayList = senior.getDayList().stream().map(SeniorDay::getDay).toList();
     int intersectCount = memberDayList.stream()

@@ -35,6 +35,23 @@ public class DetailSeniorResponse {
 
   private String address;
 
+  private Integer salary;
+
+  @Setter
+  private List<String> dayValueList;
+
+  @Setter
+  private List<String> foodAssistValueList;
+
+  @Setter
+  private List<String> moveAssistValueList;
+
+  @Setter
+  private List<String> lifeAssistValueList;
+
+  @Setter
+  private List<String> toiletAssistValueList;
+
   @Setter
   private List<DayOfWeek> dayList;
 
@@ -53,4 +70,5 @@ public class DetailSeniorResponse {
   private LocalTime startTime;
 
   private LocalTime endTime;
+
 }
