@@ -57,29 +57,40 @@ public class MapService {
    * 주소 -> 위도/경도 변환
    */
   public Coordinate geocoding(String address) {
-    GeocodingResponse response = skClient.geocoding(
-      appKey, version, address, addressFlag, coordType, count
-    );
+    try {
+      GeocodingResponse response = skClient.geocoding(
+        appKey, version, address, addressFlag, coordType, count
+      );
+      return response.getCoordinateInfo().getCoordinate().get(0);
+    } catch (Exception e) {
+      return null;
+    }
 
-    return response.getCoordinateInfo().getCoordinate().get(0);
   }
 
   /**
    * 좌표 간 거리 계산
    */
   public Double getDistance(Coordinate start, Coordinate end) {
-    String requestBody = String.format(
-      "{\"origins\":[{\"lon\":\"%f\",\"lat\":\"%f\"}],\"destinations\":[{\"lon\":\"%f\",\"lat\":\"%f\"}]}",
-      start.getLon(), start.getLat(), end.getLon(), end.getLat()
-    );
-
-    MatrixResponse matrix = skClient.matrix(appKey, version, requestBody);
-    return matrix.getMatrix().get(0).getDistance();
+    try {
+      String requestBody = String.format(
+        "{\"origins\":[{\"lon\":\"%f\",\"lat\":\"%f\"}],\"destinations\":[{\"lon\":\"%f\",\"lat\":\"%f\"}]}",
+        start.getLon(), start.getLat(), end.getLon(), end.getLat()
+      );
+      MatrixResponse matrix = skClient.matrix(appKey, version, requestBody);
+      return matrix.getMatrix().get(0).getDistance();
+    } catch (Exception e) {
+      return null;
+    }
 
   }
 
   public ListPoiResponse getPoiList(SearchPoiRequest request) {
-    return skClient.poi(appKey, version, request.address());
+    try {
+      return skClient.poi(appKey, version, request.address());
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public void readMapExcel() {

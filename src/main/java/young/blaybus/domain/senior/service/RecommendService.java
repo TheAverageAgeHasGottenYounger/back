@@ -57,6 +57,7 @@ public class RecommendService {
         ListRecommendDto.builder()
           .memberId(member.getId())
           .name(member.getName())
+          .address(member.getAddress().toString())
           .profileUrl(member.getProfileUrl())
           .dayList(jobSearch.getDayList().stream().map(JobSearchDay::getDay).toList())
           .startTime(jobSearch.getStartTime())
@@ -84,8 +85,12 @@ public class RecommendService {
     try {
       fitness += 30;
       Coordinate memberGeocoding = mapService.geocoding(member.getAddress().toString());
+      if (memberGeocoding == null) throw new GeneralException(ErrorStatus.INTERNAL_ERROR);
       Coordinate seniorGeocoding = mapService.geocoding(senior.getAddress());
+      if (seniorGeocoding == null) throw new GeneralException(ErrorStatus.INTERNAL_ERROR);
       Double distance = mapService.getDistance(memberGeocoding, seniorGeocoding);
+      if (distance == null) throw new GeneralException(ErrorStatus.INTERNAL_ERROR);
+
       double maxDistance = 350_000;
       fitness -= Math.min(30, distance * 30 / maxDistance);
     } catch (Exception e) { // API 무료 요청 횟수 초과 시
