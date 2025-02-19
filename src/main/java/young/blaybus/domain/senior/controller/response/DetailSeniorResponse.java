@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import young.blaybus.domain.senior.enums.CareGrade;
 import young.blaybus.domain.senior.enums.Sex;
 import young.blaybus.util.enums.DayOfWeek;
 import young.blaybus.util.enums.assist.FoodAssist;
@@ -36,6 +37,8 @@ public class DetailSeniorResponse {
   private String address;
 
   private Integer salary;
+
+  private CareGrade careGrade;
 
   @Setter
   private List<String> dayValueList;
@@ -71,4 +74,7 @@ public class DetailSeniorResponse {
 
   private LocalTime endTime;
 
+  public String getCareGrade() {
+    return careGrade.getValue();
+  }
 }
