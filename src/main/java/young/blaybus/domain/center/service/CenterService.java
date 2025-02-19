@@ -112,21 +112,21 @@ public class CenterService {
 
     // 소속 센터에 등록된 어르신 수
     public GetSeniorCountResponse getSeniorCount() {
-        String adminId = SecurityUtils.getCurrentMemberName();
-        Optional<Member> member = memberRepository.findById(adminId);
+      String adminId = SecurityUtils.getCurrentMemberName();
+      Optional<Member> member = memberRepository.findById(adminId);
 
-        AtomicInteger seniorCount = new AtomicInteger();
-        if (member.isPresent()) {
-            Center center = centerRepository.findById(member.get().getCenter().getId()).orElse(null);
-            if (center != null) {
-                List<Senior> senior = seniorRepository.findByCenterId(center.getId());
-                senior.forEach(s -> seniorCount.getAndIncrement());
-            }
+      AtomicInteger seniorCount = new AtomicInteger();
+      if (member.isPresent()) {
+        Center center = centerRepository.findById(member.get().getCenter().getId()).orElse(null);
+        if (center != null) {
+          List<Senior> senior = seniorRepository.findByCenterId(center.getId());
+          senior.forEach(s -> seniorCount.getAndIncrement());
         }
+      }
 
-        return GetSeniorCountResponse.builder()
-                .seniorCount(seniorCount.get())
-                .build();
+      return GetSeniorCountResponse.builder()
+              .seniorCount(seniorCount.get())
+              .build();
     }
 
 }
