@@ -25,6 +25,9 @@ public class DetailJobSearchResponse {
   @Schema(description = "구직 정보 ID")
   private Long jobSearchId;
 
+  @Schema(description = "보호사 이름")
+  private String name;
+
   @Schema(description = "근무 시작 시간")
   private LocalTime startTime;
 
