@@ -6,8 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import young.blaybus.api_response.exception.GeneralException;
 import young.blaybus.api_response.status.ErrorStatus;
-import young.blaybus.domain.job_seek.JobSeek;
-import young.blaybus.domain.job_seek.repository.JobSeekRepository;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.repository.MemberRepository;
 import young.blaybus.domain.member.security.SecurityUtils;
@@ -27,7 +25,6 @@ import young.blaybus.domain.senior.repository.SeniorRepository;
 public class CreateSeniorService {
 
   private final SeniorRepository seniorRepository;
-  private final JobSeekRepository jobSeekRepository;
   private final MemberRepository memberRepository;
 
   public void createSenior(CreateSeniorRequest request) {
@@ -107,16 +104,18 @@ public class CreateSeniorService {
     String profileUrl = senior.getProfileUrl();
     if (StringUtils.hasText(request.profileUrl())) profileUrl = request.profileUrl();
 
-    senior.toBuilder()
-      .name(request.name())
-      .birthday(request.birthday())
-      .sex(request.sex())
-      .address(request.address())
-      .profileUrl(profileUrl)
-      .startTime(request.startTime())
-      .endTime(request.endTime())
-      .careStyle(request.careStyle())
-      .build();
+    senior.update(
+      request.name(),
+      request.birthday(),
+      request.sex(),
+      request.address(),
+      profileUrl,
+      request.startTime(),
+      request.endTime(),
+      request.careStyle(),
+      request.salary()
+    );
+
 
     senior.getDayList().clear();
     senior.getLifeAssistList().clear();
@@ -167,13 +166,6 @@ public class CreateSeniorService {
           .toiletAssist(toiletAssist)
           .build()
       ));
-
-    jobSeekRepository.save(
-      JobSeek.builder()
-        .senior(senior)
-        .salary(request.salary())
-        .build()
-    );
 
   }
 }
