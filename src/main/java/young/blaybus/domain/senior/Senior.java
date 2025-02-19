@@ -34,7 +34,7 @@ import young.blaybus.domain.senior.enums.Sex;
 import young.blaybus.util.enums.CareStyle;
 
 @Entity
-@Builder(toBuilder = true)
+@Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -64,6 +64,9 @@ public class Senior {
 
   @Comment("프로필 사진")
   private String profileUrl;
+
+  @Comment("급여")
+  private Integer salary;
 
   @Comment("시작 시간")
   private LocalTime startTime;
@@ -106,4 +109,16 @@ public class Senior {
   @OneToMany(mappedBy = "senior", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<SeniorLifeAssist> lifeAssistList = new ArrayList<>();
 
+  public void update(String name, LocalDate birthday, Sex sex, String address, String profileUrl,
+    LocalTime startTime, LocalTime endTime, CareStyle careStyle, Integer salary) {
+    this.name = name;
+    this.birthday = birthday;
+    this.sex = sex;
+    this.address = address;
+    this.profileUrl = profileUrl;
+    this.startTime = startTime;
+    this.endTime = endTime;
+    this.careStyle = careStyle;
+    this.salary = salary;
+  }
 }

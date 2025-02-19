@@ -2,12 +2,15 @@ package young.blaybus.domain.senior.controller.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import young.blaybus.util.enums.CareStyle;
 import young.blaybus.util.enums.DayOfWeek;
 
 @Builder
@@ -26,6 +29,9 @@ public class ListRecommendDto {
   @Schema(description = "프로필 사진")
   private String profileUrl;
 
+  @Schema(description = "주소")
+  private String address;
+
   @Setter
   @Schema(description = "희망 요일 목록")
   private List<DayOfWeek> dayList;
@@ -37,9 +43,19 @@ public class ListRecommendDto {
   private LocalTime endTime;
 
   @Schema(description = "돌봄 스타일")
-  private String careStyle;
+  private CareStyle careStyle;
 
   @Schema(description = "적합도 %")
   private Integer fitness;
 
+  public String getStartTime() {
+    return startTime.format(DateTimeFormatter.ofPattern("a HH:mm").withLocale(Locale.forLanguageTag("ko")));
+  }
+  public String getEndTime() {
+    return endTime.format(DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko")));
+  }
+  public String getCareStyle() {
+    String emojiRegex = "[\uD83C-\uDBFF\uDC00-\uDFFF\u2600-\u26FF]+";
+    return careStyle.getValue().replaceAll(emojiRegex, "").strip();
+  }
 }

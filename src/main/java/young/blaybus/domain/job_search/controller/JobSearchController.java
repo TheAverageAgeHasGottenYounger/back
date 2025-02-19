@@ -25,10 +25,13 @@ public class JobSearchController {
     return ApiResponse.onSuccess();
   }
 
-  @GetMapping("/{member-id}")
+  @GetMapping("/{member-id}/{senior-id}")
   @Operation(summary = "회원 ID로 구직 정보 조회")
-  public ApiResponse<DetailJobSearchResponse> getJobSearch(@PathVariable("member-id") String memberId) {
-    return ApiResponse.onSuccess(jobSearchService.getJobSearch(memberId));
+  public ApiResponse<DetailJobSearchResponse> getJobSearch(
+    @PathVariable("member-id") String memberId,
+    @PathVariable("senior-id") Long seniorId
+  ) {
+    return ApiResponse.onSuccess(jobSearchService.getJobSearch(memberId, seniorId));
   }
 
   @PatchMapping("/{job-search-id}")
