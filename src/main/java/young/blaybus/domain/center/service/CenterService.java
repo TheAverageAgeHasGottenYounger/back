@@ -8,21 +8,30 @@ import young.blaybus.domain.center.Center;
 import young.blaybus.domain.center.controller.response.GetCenter;
 import young.blaybus.domain.center.controller.response.GetCenterDetailInforResponse;
 import young.blaybus.domain.center.controller.response.GetCenterResponse;
+import young.blaybus.domain.center.controller.response.GetSeniorCountResponse;
 import young.blaybus.domain.center.repository.CenterRepository;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.controller.request.CreateAdminRequest;
+import young.blaybus.domain.member.repository.MemberRepository;
+import young.blaybus.domain.member.security.SecurityUtils;
+import young.blaybus.domain.senior.Senior;
+import young.blaybus.domain.senior.repository.SeniorRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
 public class CenterService {
 
   private final CenterRepository centerRepository;
-
-  // 센터 등록
+  private final SeniorRepository seniorRepository;
+  private final MemberRepository memberRepository;
+  
+  
+    // 센터 등록
   @Transactional
   public GetCenterResponse registerCenter(String centerName) {
     Center center = Center.builder()
@@ -101,5 +110,23 @@ public class CenterService {
     return new GetCenter("해당 센터는 현재 등록되어 있지 않습니다.", false);
   }
 
+    // 소속 센터에 등록된 어르신 수
+    public GetSeniorCountResponse getSeniorCount() {
+        String adminId = SecurityUtils.getCurrentMemberName();
+        Optional<Member> member = memberRepository.findById(adminId);
+
+        AtomicInteger seniorCount = new AtomicInteger();
+        if (member.isPresent()) {
+            Center center = centerRepository.findById(member.get().getCenter().getId()).orElse(null);
+            if (center != null) {
+                List<Senior> senior = seniorRepository.findByCenterId(center.getId());
+                senior.forEach(s -> seniorCount.getAndIncrement());
+            }
+        }
+
+        return GetSeniorCountResponse.builder()
+                .seniorCount(seniorCount.get())
+                .build();
+    }
 
 }
