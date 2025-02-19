@@ -71,7 +71,7 @@ public class CenterController {
     return ApiResponse.onSuccess(centerService.getCenterDetailInfor(centerName));
   }
 
-  @GetMapping("/center/count")
+  @GetMapping("/center/senior/count")
   @Operation(summary = "소속 센터에 등록된 어르신 수")
   @ApiResponses(value = {
           @io.swagger.v3.oas.annotations.responses.ApiResponse(
