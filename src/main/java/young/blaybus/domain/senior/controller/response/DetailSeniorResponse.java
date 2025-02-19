@@ -40,20 +40,20 @@ public class DetailSeniorResponse {
 
   private CareGrade careGrade;
 
-  @Setter
-  private List<String> dayValueList;
-
-  @Setter
-  private List<String> foodAssistValueList;
-
-  @Setter
-  private List<String> moveAssistValueList;
-
-  @Setter
-  private List<String> lifeAssistValueList;
-
-  @Setter
-  private List<String> toiletAssistValueList;
+//  @Setter
+//  private List<String> dayValueList;
+//
+//  @Setter
+//  private List<String> foodAssistValueList;
+//
+//  @Setter
+//  private List<String> moveAssistValueList;
+//
+//  @Setter
+//  private List<String> lifeAssistValueList;
+//
+//  @Setter
+//  private List<String> toiletAssistValueList;
 
   @Setter
   private List<DayOfWeek> dayList;

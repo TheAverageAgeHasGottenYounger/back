@@ -41,6 +41,9 @@ public class Matching {
   @Comment("매칭 상태")
   private MatchingStatus status;
 
+  @Comment("적합도(%)")
+  private Integer fitness;
+
   @CreatedDate
   @Column(updatable = false)
   private LocalDateTime createdTime;
