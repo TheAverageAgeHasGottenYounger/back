@@ -115,6 +115,7 @@ public class JobSearchService {
 
     return DetailJobSearchResponse.builder()
       .jobSearchId(jobSearch.getId())
+      .profileUrl(member.getProfileUrl())
       .name(member.getName())
       .startTime(jobSearch.getStartTime())
       .endTime(jobSearch.getEndTime())
