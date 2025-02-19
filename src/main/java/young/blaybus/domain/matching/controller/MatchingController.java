@@ -12,6 +12,8 @@ import young.blaybus.api_response.ApiResponse;
 import young.blaybus.domain.matching.controller.request.PatchStatusRequest;
 import young.blaybus.domain.matching.controller.response.*;
 import young.blaybus.domain.matching.service.MatchingService;
+import young.blaybus.domain.senior.controller.response.DetailMatchingSeniorResponse;
+import young.blaybus.domain.senior.service.SeniorService;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +22,7 @@ import young.blaybus.domain.matching.service.MatchingService;
 public class MatchingController {
 
     private final MatchingService matchingService;
+    private final SeniorService seniorService;
 
     // 매칭 요청
     @PostMapping(value = "/request/{worker-id}/{senior-id}")
@@ -77,6 +80,15 @@ public class MatchingController {
     public ApiResponse<?> update(@RequestBody PatchStatusRequest statusRequest) {
         matchingService.matchingStatusPatch(statusRequest);
         return ApiResponse.onSuccess();
+    }
+
+
+    @GetMapping("/{senior-id}")
+    @Operation(summary = "매칭 요청 어르신 상세 조회")
+    public ApiResponse<DetailMatchingSeniorResponse> getMatchingSenior(
+      @PathVariable("senior-id") Long seniorId
+    ) {
+        return ApiResponse.onSuccess(seniorService.getMatchingSenior(seniorId));
     }
 
 }

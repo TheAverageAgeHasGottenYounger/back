@@ -15,6 +15,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import young.blaybus.config.jpa.BooleanToYNConverter;
+import young.blaybus.config.jpa.CryptoConverter;
 import young.blaybus.domain.address.Address;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.senior.Senior;
@@ -33,6 +34,10 @@ public class Center {
 
   @Comment("센터명")
   private String name;
+
+  @Convert(converter = CryptoConverter.class)
+  @Comment("센터 전화번호")
+  private String phoneNumber;
 
   @Convert(converter = BooleanToYNConverter.class)
   @Column(columnDefinition = "char(1) default 'N'")

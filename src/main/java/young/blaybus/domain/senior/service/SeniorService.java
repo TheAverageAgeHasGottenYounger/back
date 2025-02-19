@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import young.blaybus.domain.senior.controller.request.CreateSeniorRequest;
 import young.blaybus.domain.senior.controller.request.UpdateSeniorRequest;
+import young.blaybus.domain.senior.controller.response.DetailMatchingSeniorResponse;
 import young.blaybus.domain.senior.controller.response.DetailSeniorResponse;
 import young.blaybus.domain.senior.controller.response.ListSeniorResponse;
 
@@ -29,5 +30,9 @@ public class SeniorService {
 
   public void updateSenior(Long seniorId, UpdateSeniorRequest request) {
     createSeniorService.updateSenior(seniorId, request);
+  }
+
+  public DetailMatchingSeniorResponse getMatchingSenior(Long seniorId) {
+    return detailSeniorService.getMatchingSenior(seniorId);
   }
 }

@@ -1,6 +1,7 @@
 package young.blaybus.domain.senior.repository;
 
 import static young.blaybus.domain.job_seek.QJobSeek.jobSeek;
+import static young.blaybus.domain.matching.QMatching.matching;
 import static young.blaybus.domain.senior.QSenior.senior;
 import static young.blaybus.domain.senior.QSeniorDay.seniorDay;
 import static young.blaybus.domain.senior.QSeniorFoodAssist.seniorFoodAssist;
@@ -13,6 +14,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import young.blaybus.domain.member.Member;
+import young.blaybus.domain.senior.controller.response.DetailMatchingSeniorResponse;
 import young.blaybus.domain.senior.controller.response.DetailSeniorResponse;
 import young.blaybus.util.enums.DayOfWeek;
 import young.blaybus.util.enums.assist.FoodAssist;
@@ -92,5 +95,31 @@ public class DetailSeniorRepository {
       .from(seniorToiletAssist)
       .where(seniorToiletAssist.senior.id.eq(seniorId))
       .fetch();
+  }
+
+  public DetailMatchingSeniorResponse getMatchingSenior(Long seniorId, Member worker) {
+    return queryFactory.select(
+        Projections.fields(
+          DetailMatchingSeniorResponse.class,
+          senior.id.as("seniorId"),
+          senior.name,
+          senior.careGrade,
+          senior.careStyle,
+          senior.profileUrl,
+          senior.sex,
+          senior.birthday,
+          senior.address,
+          jobSeek.salary,
+          senior.startTime,
+          senior.endTime,
+          matching.fitness,
+          senior.center.phoneNumber
+        )
+      )
+      .from(senior)
+      .innerJoin(matching).on(matching.senior.eq(senior), matching.member.eq(worker))
+      .leftJoin(jobSeek).on(senior.eq(jobSeek.senior))
+      .where(senior.id.eq(seniorId))
+      .fetchOne();
   }
 }
