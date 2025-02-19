@@ -53,6 +53,7 @@ public class DetailMatchingSeniorResponse {
 
   private LocalTime endTime;
 
+  @Setter
   private Integer fitness;
 
   private String phoneNumber;
