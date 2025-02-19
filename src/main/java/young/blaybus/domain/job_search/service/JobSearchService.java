@@ -20,6 +20,9 @@ import young.blaybus.domain.job_search.response.DetailJobSearchResponse;
 import young.blaybus.domain.job_search.response.JobSearchAreaResponse;
 import young.blaybus.domain.member.Member;
 import young.blaybus.domain.member.repository.MemberRepository;
+import young.blaybus.domain.senior.Senior;
+import young.blaybus.domain.senior.repository.SeniorRepository;
+import young.blaybus.domain.senior.service.RecommendService;
 import young.blaybus.util.enums.DayOfWeek;
 
 import java.time.LocalDateTime;
@@ -34,6 +37,8 @@ public class JobSearchService {
   private final JobSearchRepository jobSearchRepository;
   private final MemberRepository memberRepository;
   private final CertificateRepository certificateRepository;
+  private final SeniorRepository seniorRepository;
+  private final RecommendService recommendService;
 
   @Transactional
   public void createJobSearch(CreateJobSearchRequest jobSearchRequest) {
@@ -78,9 +83,11 @@ public class JobSearchService {
   }
 
   @Transactional
-  public DetailJobSearchResponse getJobSearch(String memberId) {
+  public DetailJobSearchResponse getJobSearch(String memberId, Long seniorId) {
     Member member = memberRepository.findById(memberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.NOT_FOUND, "존재하지 않는 회원 ID입니다."));
+    Senior senior = seniorRepository.findById(seniorId)
+      .orElseThrow(() -> new GeneralException(ErrorStatus.NOT_FOUND, "존재하지 않는 어르신 ID입니다."));
 
     JobSearch jobSearch = jobSearchRepository.findByMemberId(memberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.NOT_FOUND, "해당 회원의 구직 정보가 존재하지 않습니다."));
@@ -108,8 +115,9 @@ public class JobSearchService {
 
     return DetailJobSearchResponse.builder()
       .jobSearchId(jobSearch.getId())
-      .startTime(jobSearch.getStartTime().toString())
-      .endTime(jobSearch.getEndTime().toString())
+      .startTime(jobSearch.getStartTime())
+      .endTime(jobSearch.getEndTime())
+      .careStyle(member.getCareStyle())
       .salary(jobSearch.getSalary())
       .jobSearchAreas(jobSearchAreaResponses)
       .dayList(dayList)
@@ -117,6 +125,7 @@ public class JobSearchService {
       .career(member.getCareer())
       .careerPeriod(member.getCareerPeriod())
       .introduction(member.getIntroduction())
+      .fitness(recommendService.calculateFitness(member, senior))
       .build();
   }
 }

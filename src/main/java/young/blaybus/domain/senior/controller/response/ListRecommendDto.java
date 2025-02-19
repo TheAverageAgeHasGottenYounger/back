@@ -29,6 +29,9 @@ public class ListRecommendDto {
   @Schema(description = "프로필 사진")
   private String profileUrl;
 
+  @Schema(description = "주소")
+  private String address;
+
   @Setter
   @Schema(description = "희망 요일 목록")
   private List<DayOfWeek> dayList;
