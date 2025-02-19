@@ -32,6 +32,8 @@ public class DetailSeniorRepository {
         Projections.fields(
           DetailSeniorResponse.class,
           senior.id.as("seniorId"),
+          senior.name,
+          senior.careGrade,
           senior.profileUrl,
           senior.sex,
           senior.birthday,
