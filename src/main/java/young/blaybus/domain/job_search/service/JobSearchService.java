@@ -45,31 +45,37 @@ public class JobSearchService {
     Member member = memberRepository.findById(jobSearchRequest.memberId())
       .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-    JobSearch jobSearch = JobSearch.builder()
-      .member(member)
-      .startTime(LocalTime.parse(jobSearchRequest.startTime()))
-      .endTime(LocalTime.parse(jobSearchRequest.endTime()))
-      .salary(jobSearchRequest.salary())
-      .createdTime(LocalDateTime.now())
-      .build();
+    JobSearch jobSearch = jobSearchRepository.findByMemberId(member.getId()).orElse(null);
+    if (jobSearch == null) {
 
-    List<JobSearchArea> jobSearchAreas = jobSearchRequest.jobSearchAreas().stream()
-      .map(areaRequest -> JobSearchArea.builder()
-        .address(areaRequest.address())
-        .jobSearch(jobSearch)
-        .build())
-      .toList();
-    jobSearch.getJobSearchAreas().addAll(jobSearchAreas);
+      JobSearch newJobSearch = JobSearch.builder()
+        .member(member)
+        .startTime(LocalTime.parse(jobSearchRequest.startTime()))
+        .endTime(LocalTime.parse(jobSearchRequest.endTime()))
+        .salary(jobSearchRequest.salary())
+        .createdTime(LocalDateTime.now())
+        .build();
 
-    List<JobSearchDay> jobSearchDays = jobSearchRequest.dayList().stream()
-      .map(day -> JobSearchDay.builder()
-        .day(day)
-        .jobSearch(jobSearch)
-        .build())
-      .toList();
-    jobSearch.getDayList().addAll(jobSearchDays);
+      List<JobSearchArea> jobSearchAreas = jobSearchRequest.jobSearchAreas().stream()
+        .map(areaRequest -> JobSearchArea.builder()
+          .address(areaRequest.address())
+          .jobSearch(newJobSearch)
+          .build())
+        .toList();
+      newJobSearch.getJobSearchAreas().addAll(jobSearchAreas);
 
-    jobSearchRepository.save(jobSearch);
+      List<JobSearchDay> jobSearchDays = jobSearchRequest.dayList().stream()
+        .map(day -> JobSearchDay.builder()
+          .day(day)
+          .jobSearch(newJobSearch)
+          .build())
+        .toList();
+      newJobSearch.getDayList().addAll(jobSearchDays);
+
+      jobSearchRepository.save(newJobSearch);
+    } else {
+      jobSearch.updateFromDto(jobSearchRequest);
+    }
   }
 
   @Transactional
