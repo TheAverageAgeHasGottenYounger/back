@@ -16,6 +16,7 @@ import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import young.blaybus.domain.job_search.request.CreateJobSearchRequest;
 import young.blaybus.domain.job_search.request.JobSearchAreaRequest;
 import young.blaybus.domain.job_search.request.UpdateJobSearchRequest;
 import young.blaybus.domain.member.Member;
@@ -62,6 +63,40 @@ public class JobSearch {
   private List<JobSearchDay> dayList = new ArrayList<>();
 
   public void updateFromDto(UpdateJobSearchRequest request){
+    if(request.startTime()!=null) {
+      this.startTime = LocalTime.parse(request.startTime());
+    }
+
+    if(request.endTime()!=null) {
+      this.endTime = LocalTime.parse(request.endTime());
+    }
+
+    if(request.salary()!=null) {
+      this.salary = request.salary();
+    }
+
+    if(!request.jobSearchAreas().isEmpty()) {
+      this.jobSearchAreas.clear();
+        for (JobSearchAreaRequest jobSearchAreaRequest : request.jobSearchAreas()) {
+          this.jobSearchAreas.add(JobSearchArea.builder()
+                  .jobSearch(this)
+                  .address(jobSearchAreaRequest.address())
+                  .build());
+        }
+    }
+
+    if(!request.dayList().isEmpty()) {
+      this.dayList.clear();
+      for (DayOfWeek dayOfWeek : request.dayList()) {
+        this.dayList.add(JobSearchDay.builder()
+                .jobSearch(this)
+                .day(dayOfWeek)
+                .build());
+      }
+    }
+  }
+
+  public void updateFromDto(CreateJobSearchRequest request){
     if(request.startTime()!=null) {
       this.startTime = LocalTime.parse(request.startTime());
     }

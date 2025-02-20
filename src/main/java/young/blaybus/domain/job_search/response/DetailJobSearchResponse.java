@@ -25,6 +25,12 @@ public class DetailJobSearchResponse {
   @Schema(description = "구직 정보 ID")
   private Long jobSearchId;
 
+  @Schema(description = "프로필 사진")
+  private String profileUrl;
+
+  @Schema(description = "보호사 이름")
+  private String name;
+
   @Schema(description = "근무 시작 시간")
   private LocalTime startTime;
 
